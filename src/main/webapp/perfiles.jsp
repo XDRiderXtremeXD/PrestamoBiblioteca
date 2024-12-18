@@ -105,21 +105,35 @@
 										<button class="btn btn-sm btn-outline-secondary"
 											title="Ver más" data-bs-toggle="modal"
 											data-bs-target="#viewProfileModal"
-											aria-label="Ver detalles del perfil">
+											aria-label="Ver detalles del perfil"
+											data-id="<%=item.getIdPerfil()%>"
+											data-usuario="<%=item.getUsuario()%>"
+											data-correo-electronico="<%=item.getCorreoElectronico()%>"
+											data-nombres="<%=item.getNombres()%>"
+											data-apellidos="<%=item.getApellidos()%>"
+											data-rol="<%=item.getRol()%>"
+											data-foto-perfil="<%=item.getFotoPerfil()%>"
+											data-estado="<%=item.getEstado()%>">
 											<i class="bi bi-eye"></i>
 										</button>
-
 										<!-- Editar perfil (abre un modal para editar) -->
 										<button class="btn btn-sm btn-outline-primary" title="Editar"
 											data-bs-toggle="modal" data-bs-target="#editProfileModal"
-											aria-label="Editar perfil">
+											aria-label="Editar perfil" data-id="<%=item.getIdPerfil()%>"
+											data-usuario="<%=item.getUsuario()%>"
+											data-correo-electronico="<%=item.getCorreoElectronico()%>"
+											data-nombres="<%=item.getNombres()%>"
+											data-apellidos="<%=item.getApellidos()%>"
+											data-rol="<%=item.getRol()%>"
+											data-foto-perfil="<%=item.getFotoPerfil()%>"
+											data-estado="<%=item.getEstado()%>">
 											<i class="bi bi-pencil"></i>
 										</button>
-
 										<!-- Eliminar perfil (abre un modal para confirmar eliminación) -->
 										<button class="btn btn-sm btn-outline-danger" title="Eliminar"
 											data-bs-toggle="modal" data-bs-target="#deleteProfileModal"
-											aria-label="Eliminar perfil">
+											aria-label="Eliminar perfil"
+											data-id="<%=item.getIdPerfil()%>">
 											<i class="bi bi-trash"></i>
 										</button>
 									</div>
@@ -206,8 +220,8 @@
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="addProfileType" class="form-label">Rol de
-									Perfil</label> <select class="selectpicker form-control"
-									id="addProfileType" title="Seleccione un rol" required>
+									Perfil</label> <select class=" form-control" id="addProfileType"
+									title="Seleccione un rol" required>
 									<option value="Usuario">Usuario</option>
 									<option value="Admin">Administrador</option>
 								</select>
@@ -348,8 +362,8 @@
 							</div>
 							<div class="col-md-6 mb-3">
 								<label for="editProfileRole" class="form-label">Rol de
-									Perfil</label> <select class="selectpicker form-control"
-									id="profileRole" name="editProfileRole" required>
+									Perfil</label> <select class=" form-control" id="profileRole"
+									name="editProfileRole" required>
 									<option value="Administrador" selected>Administrador</option>
 									<option value="Usuario">Usuario</option>
 								</select>
@@ -421,8 +435,9 @@
 	<!-- Scripts personalizados (que se cargan después de las bibliotecas) -->
 	<script src="js/alert.js"></script>
 	<script src="js/datatables-setup.js"></script>
+	<script src="js/perfilesModal.js"></script>
 
-	<!-- Script para DataTable -->
+	<!-- Script para DataTable  -->
 	<script>
 		setupDataTable('#tablaPerfiles');
 	</script>

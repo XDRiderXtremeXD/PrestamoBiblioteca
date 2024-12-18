@@ -10,8 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import entidades.Estudiante;
+import entidades.Facultad;
 import entidades.Libro;
 import modelos.EstudianteModel;
+import modelos.FacultadModel;
 import modelos.LibroModel;
 
 /**
@@ -49,7 +51,11 @@ public class EstudianteServlet extends HttpServlet {
 		EstudianteModel estudianteModel = new EstudianteModel();
 		List<Estudiante> data=estudianteModel.listEstudiante();
 		
+		FacultadModel facultadModel = new FacultadModel();
+		List<Facultad> facultades=facultadModel.listFacultad();
+		
 		request.setAttribute("data", data);
+		request.setAttribute("facultades", facultades);
 		request.getRequestDispatcher("estudiantes.jsp").forward(request, response);
 	}
 

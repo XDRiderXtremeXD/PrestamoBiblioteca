@@ -1,3 +1,4 @@
+<%@page import="entidades.GeneroLiterario"%>
 <%@page import="entidades.Editorial"%>
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -21,8 +22,9 @@
 <link rel="icon" href="images/favicon.ico" type="image/x-icon">
 </head>
 <body>
-<%
-	List<Editorial> listEditorial= (List<Editorial>) request.getAttribute("data");
+	<%
+	List<Editorial> listEditorial = (List<Editorial>) request.getAttribute("data");
+	List<GeneroLiterario> listGeneroLiterario = (List<GeneroLiterario>) request.getAttribute("generos");
 	%>
 	<!-- Header -->
 	<jsp:include page="WEB-INF/includes/header.jsp"></jsp:include>
@@ -103,19 +105,43 @@
 								<td><%=item.getEstado()%></td>
 								<td class="align-middle text-center">
 									<div class="d-inline-flex gap-2">
-										<button
-											class="btn btn-sm btn-outline-secondary view-editorial"
-											data-id="<%=item.getIdEditorial()%>" data-bs-toggle="modal"
-											data-bs-target="#viewEditorialModal" title="Ver más"
-											aria-label="Ver detalles de la editorial">
+										<!-- Botón para ver detalles de la editorial -->
+										<button class="btn btn-sm btn-outline-secondary"
+											title="Ver más" data-bs-toggle="modal"
+											data-bs-target="#viewPublisherModal"
+											aria-label="Ver detalles de la editorial"
+											data-id="<%=item.getIdEditorial()%>"
+											data-nombre="<%=item.getNombre()%>"
+											data-nacionalidad="<%=item.getNacionalidad()%>"
+											data-genero-literario="<%=item.getGeneroLiterario()%>"
+											data-anio-fundacion="<%=item.getAnioFundacion()%>"
+											data-pagina-web="<%=item.getPaginaWeb()%>"
+											data-direccion="<%=item.getDireccion()%>"
+											data-estado="<%=item.getEstado()%>"
+											data-foto="<%=item.getFoto()%>">
 											<i class="bi bi-eye"></i>
 										</button>
-
-										<button class="btn btn-sm btn-outline-primary edit-editorial"
-											data-id="<%=item.getIdEditorial()%>" data-bs-toggle="modal"
-											data-bs-target="#editEditorialModal" title="Editar"
-											aria-label="Editar editorial">
+										<!-- Botón para editar la editorial -->
+										<button class="btn btn-sm btn-outline-primary" title="Editar"
+											data-bs-toggle="modal" data-bs-target="#editPublisherModal"
+											aria-label="Editar editorial"
+											data-id="<%=item.getIdEditorial()%>"
+											data-nombre="<%=item.getNombre()%>"
+											data-nacionalidad="<%=item.getNacionalidad()%>"
+											data-genero-literario="<%=item.getGeneroLiterario()%>"
+											data-anio-fundacion="<%=item.getAnioFundacion()%>"
+											data-pagina-web="<%=item.getPaginaWeb()%>"
+											data-direccion="<%=item.getDireccion()%>"
+											data-estado="<%=item.getEstado()%>"
+											data-foto="<%=item.getFoto()%>">
 											<i class="bi bi-pencil"></i>
+										</button>
+										<!-- Botón para eliminar la editorial -->
+										<button class="btn btn-sm btn-outline-danger" title="Eliminar"
+											data-bs-toggle="modal" data-bs-target="#deletePublisherModal"
+											aria-label="Eliminar editorial"
+											data-id="<%=item.getIdEditorial()%>">
+											<i class="bi bi-trash"></i>
 										</button>
 									</div>
 								</td>
@@ -159,12 +185,18 @@
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="addLiteraryGenre" class="form-label">Género
-									Literario</label> <select class="selectpicker form-control"
-									id="addLiteraryGenre" data-live-search="true"
-									title="Seleccione un género literario" required>
-									<option value="Realismo mágico">Realismo mágico</option>
-									<option value="Fantasía">Fantasía</option>
-									<option value="Ficción">Ficción</option>
+									Literario</label> <select class="form-control" id="addLiteraryGenre"
+									data-live-search="true" title="Seleccione un género literario"
+									required>
+									<%
+									if (listGeneroLiterario != null) {
+										for (GeneroLiterario item : listGeneroLiterario) {
+									%>
+									<option value="<%=item.getIdGeneroLiterario()%>"><%=item.getNombreGenero()%></option>
+									<%
+									}
+									}
+									%>
 								</select>
 							</div>
 							<div class="col-md-6 mb-3">
@@ -196,7 +228,7 @@
 							</div>
 							<div class="col-md-6 mb-3">
 								<label for="addEditorialState" class="form-label">Estado</label>
-								<select class="selectpicker form-control" id="addEditorialState"
+								<select class=" form-control" id="addEditorialState"
 									title="Seleccione un estado" required>
 									<option value="Activo">Activo</option>
 									<option value="No Activo">Inactivo</option>
@@ -319,13 +351,18 @@
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="editLiteraryGenre" class="form-label">Género
-									Literario</label> <select class="selectpicker form-control"
-									id="editLiteraryGenre" title="Seleccione un género literario"
+									Literario</label> <select class="form-control" id="editLiteraryGenre"
+									data-live-search="true" title="Seleccione un género literario"
 									required>
-									<option value="Realismo mágico" selected>Realismo
-										mágico</option>
-									<option value="Fantasía">Fantasía</option>
-									<option value="Ficción">Ficción</option>
+									<%
+									if (listGeneroLiterario != null) {
+										for (GeneroLiterario item : listGeneroLiterario) {
+									%>
+									<option value="<%=item.getIdGeneroLiterario()%>"><%=item.getNombreGenero()%></option>
+									<%
+									}
+									}
+									%>
 								</select>
 							</div>
 							<div class="col-md-6 mb-3">
@@ -358,8 +395,8 @@
 							</div>
 							<div class="col-md-6 mb-3">
 								<label for="editPublisherState" class="form-label">Estado</label>
-								<select class="selectpicker form-control"
-									id="editPublisherState" name="Seleccione un estado" required>
+								<select class=" form-control" id="editPublisherState"
+									name="Seleccione un estado" required>
 									<option value="Activo" selected>Activo</option>
 									<option value="No Activo">Inactivo</option>
 								</select>
@@ -400,7 +437,7 @@
 	<!-- Scripts personalizados (que se cargan después de las bibliotecas) -->
 	<script src="js/alert.js"></script>
 	<script src="js/datatables-setup.js"></script>
-
+<script src="js/editorialesModal.js"></script>
 	<!-- Script para DataTable -->
 	<script>
 		setupDataTable('#tablaEditoriales');
