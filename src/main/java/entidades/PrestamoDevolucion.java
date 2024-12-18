@@ -4,31 +4,32 @@ import java.sql.Date;
 
 public class PrestamoDevolucion {
     private int idPrestamo;
-    private int idLibro;
-    private int idEstudiante;
+    private String libro;
+    private String estudiante;
     private Date fechaPrestamo;
     private Date fechaDevolucion;
     private int cantidad;
     private String estado;
     private String observacion;
     
+    
+	public String getLibro() {
+		return libro;
+	}
+	public void setLibro(String libro) {
+		this.libro = libro;
+	}
+	public String getEstudiante() {
+		return estudiante;
+	}
+	public void setEstudiante(String estudiante) {
+		this.estudiante = estudiante;
+	}
 	public int getIdPrestamo() {
 		return idPrestamo;
 	}
 	public void setIdPrestamo(int idPrestamo) {
 		this.idPrestamo = idPrestamo;
-	}
-	public int getIdLibro() {
-		return idLibro;
-	}
-	public void setIdLibro(int idLibro) {
-		this.idLibro = idLibro;
-	}
-	public int getIdEstudiante() {
-		return idEstudiante;
-	}
-	public void setIdEstudiante(int idEstudiante) {
-		this.idEstudiante = idEstudiante;
 	}
 	public Date getFechaPrestamo() {
 		return fechaPrestamo;

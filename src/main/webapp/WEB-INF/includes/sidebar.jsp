@@ -12,43 +12,43 @@
 	            </a>
 	        </li>
 	        <li class="mb-1">
-	            <a href="pyd.jsp" class="nav-link link-body-emphasis d-flex align-items-center">
+	            <a href="PrestamoDevolucionServlet?type=list" class="nav-link link-body-emphasis d-flex align-items-center">
 	                <i class="bi pe-none me-2 bi-file-earmark-bar-graph"></i>
 	                Prestar / Devolver
 	            </a>
 	        </li>
 	        <li class="mb-1">
-	            <a href="libros.jsp" class="nav-link link-body-emphasis d-flex align-items-center">
+	            <a href="LibroServlet?type=list" class="nav-link link-body-emphasis d-flex align-items-center">
 	                <i class="bi pe-none me-2 bi-book"></i>
 	                Libros
 	            </a>
 	        </li>
 	        <li class="mb-1">
-	            <a href="autores.jsp" class="nav-link link-body-emphasis d-flex align-items-center">
+	            <a href="AutorServlet?type=list" class="nav-link link-body-emphasis d-flex align-items-center">
 	                <i class="bi pe-none me-2 bi-person-vcard"></i>
 	                Autores
 	            </a>
 	        </li>
 	        <li class="mb-1">
-	            <a href="editoriales.jsp" class="nav-link link-body-emphasis d-flex align-items-center">
+	            <a href="EditorialServlet?type=list" class="nav-link link-body-emphasis d-flex align-items-center">
 	                <i class="bi pe-none me-2 bi-newspaper"></i>
 	                Editoriales
 	            </a>
 	        </li>
 	        <li class="mb-1">
-	            <a href="cursos.jsp" class="nav-link link-body-emphasis d-flex align-items-center">
+	            <a href="CursosServlet?type=list" class="nav-link link-body-emphasis d-flex align-items-center">
 	                <i class="bi pe-none me-2 bi-journal-bookmark"></i>
 	                Cursos
 	            </a>
 	        </li>
 	        <li class="mb-1">
-	            <a href="estudiantes.jsp" class="nav-link link-body-emphasis d-flex align-items-center">
+	            <a href="EstudianteServlet?type=list" class="nav-link link-body-emphasis d-flex align-items-center">
 	                <i class="bi pe-none me-2 bi-mortarboard"></i>
 	                Estudiantes
 	            </a>
 	        </li>
 	        <li class="mb-1">
-	            <a href="perfiles.jsp" class="nav-link link-body-emphasis d-flex align-items-center">
+	            <a href="PerfilServlet?type=list"  class="nav-link link-body-emphasis d-flex align-items-center">
 	                <i class="bi pe-none me-2 bi-people"></i>
 	                Perfiles
 	            </a>

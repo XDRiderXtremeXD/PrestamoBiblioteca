@@ -25,7 +25,7 @@ public class LibroModel implements LibroInterface {
 	}
 
 	@Override
-	public int deleteLibro(String id) {
+	public int deleteLibro(int id) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
@@ -40,27 +40,35 @@ public class LibroModel implements LibroInterface {
 		ResultSet rs=null;
 		
 		try {
-			cn = MySqlConexion.getConexion();
-			String sql="SELECT * FROM Libro";
-			psm = cn.prepareStatement(sql);
-			rs=psm.executeQuery();
-			
-			while (rs.next()) {
-				Libro libro = new Libro();
-				libro.setIdLibro(rs.getInt("IDLibro"));
-				libro.setTitulo(rs.getString("Titulo"));
-				libro.setEjemplaresTotales(rs.getInt("Ejemplares_totales"));
-				libro.setEjemplaresPrestados(rs.getInt("Ejemplares_prestados"));
-				libro.setIdAutor(rs.getInt("IDAutor"));
-				libro.setIdEditorial(rs.getInt("IDEditorial"));
-				libro.setIdCurso(rs.getInt("IDCurso"));
-				libro.setFechaLanzamiento(rs.getDate("FechaLanzamiento"));
-				libro.setGenero(rs.getString("Genero"));
-				libro.setEstado(rs.getString("Estado"));
-				listLibro.add(libro);
-			}
-			
-		} catch (Exception e) {
+		    cn = MySqlConexion.getConexion();
+		    String sql = """
+		        SELECT l.IDLibro, l.Titulo, l.Ejemplares_totales, l.Ejemplares_prestados, 
+		               a.Nombre AS Autor, e.Nombre AS Editorial, c.Nombre AS Curso, 
+		               l.FechaLanzamiento, l.Genero, l.Estado
+		        FROM Libro l
+		        JOIN Autor a ON l.IDAutor = a.IDAutor
+		        JOIN Editorial e ON l.IDEditorial = e.IDEditorial
+		        JOIN Curso c ON l.IDCurso = c.IDCurso
+		    """;
+		    psm = cn.prepareStatement(sql);
+		    rs = psm.executeQuery();
+		    
+		    while (rs.next()) {
+		        Libro libro = new Libro();
+		        libro.setIdLibro(rs.getInt("IDLibro"));
+		        libro.setTitulo(rs.getString("Titulo"));
+		        libro.setEjemplaresTotales(rs.getInt("Ejemplares_totales"));
+		        libro.setEjemplaresPrestados(rs.getInt("Ejemplares_prestados"));
+		        libro.setAutor(rs.getString("Autor")); // Setea el nombre del Autor
+		        libro.setEditorial(rs.getString("Editorial")); // Setea el nombre de la Editorial
+		        libro.setCurso(rs.getString("Curso")); // Setea el nombre del Curso
+		        libro.setFechaLanzamiento(rs.getDate("FechaLanzamiento"));
+		        libro.setGenero(rs.getString("Genero"));
+		        libro.setEstado(rs.getString("Estado"));
+		        listLibro.add(libro);
+		    }
+		} 
+ catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
 		} finally {
@@ -75,6 +83,65 @@ public class LibroModel implements LibroInterface {
 		}
 		
 		return listLibro;
+	}
+
+	@Override
+	public Libro getLibro(int id) {
+		// TODO Auto-generated method stub
+		
+		// TODO Auto-generated method stub
+		Libro libro=null;
+		
+		Connection cn=null;
+		PreparedStatement psm=null;
+		ResultSet rs=null;
+		
+		try {
+			cn=MySqlConexion.getConexion();
+			
+			 String sql = """
+				        SELECT l.IDLibro, l.Titulo, l.Ejemplares_totales, l.Ejemplares_prestados, 
+				               a.Nombre AS Autor, e.Nombre AS Editorial, c.Nombre AS Curso, 
+				               l.FechaLanzamiento, l.Genero, l.Estado
+				        FROM Libro l
+				        JOIN Autor a ON l.IDAutor = a.IDAutor
+				        JOIN Editorial e ON l.IDEditorial = e.IDEditorial
+				        JOIN Curso c ON l.IDCurso = c.IDCurso where l.IDLibro=?
+				    """;
+			 
+			psm=cn.prepareStatement(sql);
+			psm.setInt(1, id);
+			
+			rs=psm.executeQuery();
+			
+			if (rs.next()) {
+				libro = new Libro();
+				libro.setIdLibro(rs.getInt("IDLibro"));
+				libro.setTitulo(rs.getString("Titulo"));
+				libro.setEjemplaresTotales(rs.getInt("Ejemplares_totales"));
+				libro.setEjemplaresPrestados(rs.getInt("Ejemplares_prestados"));
+				 libro.setAutor(rs.getString("Autor")); // Setea el nombre del Autor
+			        libro.setEditorial(rs.getString("Editorial")); // Setea el nombre de la Editorial
+			        libro.setCurso(rs.getString("Curso")); // Setea el nombre del Curso
+				libro.setFechaLanzamiento(rs.getDate("FechaLanzamiento"));
+				libro.setGenero(rs.getString("Genero"));
+				libro.setEstado(rs.getString("Estado"));
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		} finally {
+			try {
+				if(rs !=null) rs.close();
+				if(psm !=null) psm.close();
+				if(cn !=null) cn.close();
+			} catch (Exception e2) {
+				// TODO: handle exception
+				e2.printStackTrace();
+			}
+		}
+		
+		return libro;
 	}
 
 }
