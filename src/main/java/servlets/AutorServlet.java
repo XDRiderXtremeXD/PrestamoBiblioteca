@@ -10,7 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import entidades.Autor;
+import entidades.GeneroLiterario;
 import modelos.AutorModel;
+import modelos.GeneroLiterarioModel;
 
 /**
  * Servlet implementation class AutorServlet
@@ -69,14 +71,14 @@ public class AutorServlet extends HttpServlet {
     private void listAutores(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Crear una instancia del modelo de autores
         AutorModel autoresModel = new AutorModel();
+        GeneroLiterarioModel generoLiterarioModel = new GeneroLiterarioModel();
 
         // Obtener la lista de autores
         List<Autor> data = autoresModel.listAutor();
-
+        List<GeneroLiterario> generos = generoLiterarioModel.listGeneroLiterario();
         // Establecer la lista de autores como atributo para la vista JSP
         request.setAttribute("data", data);
-        
-        System.out.println(data);
+        request.setAttribute("generos", generos);
 
         // Redirigir a la página de listado de autores
         request.getRequestDispatcher("autores.jsp").forward(request, response);

@@ -9,8 +9,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import entidades.Autor;
 import entidades.Editorial;
+import entidades.GeneroLiterario;
+import modelos.AutorModel;
 import modelos.EditorialesModel;
+import modelos.GeneroLiterarioModel;
 
 /**
  * Servlet implementation class EditorialServlet
@@ -46,11 +50,12 @@ public class EditorialServlet extends HttpServlet {
     private void listEditorial(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Crear una instancia del modelo de Editorial
     	EditorialesModel editorialModel = new EditorialesModel();
-        
-        // Obtener la lista de todas las editoriales
+    	GeneroLiterarioModel generoLiterarioModel = new GeneroLiterarioModel();
+    	
         List<Editorial> data = editorialModel.listEditorial();
-
-        // Establecer los datos como atributo de la solicitud y redirigir a la vista
+        List<GeneroLiterario> generos = generoLiterarioModel.listGeneroLiterario();
+        
+        request.setAttribute("generos", generos);
         request.setAttribute("data", data);
         request.getRequestDispatcher("editoriales.jsp").forward(request, response);
     }

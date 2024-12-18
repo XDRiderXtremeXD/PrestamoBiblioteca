@@ -1,3 +1,4 @@
+<%@page import="entidades.GeneroLiterario"%>
 <%@page import="entidades.Autor"%>
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -21,8 +22,9 @@
 <link rel="icon" href="images/favicon.ico" type="image/x-icon">
 </head>
 <body>
-<%
+	<%
 	List<Autor> listAutores = (List<Autor>) request.getAttribute("data");
+	List<GeneroLiterario> listGeneroLiterario = (List<GeneroLiterario>) request.getAttribute("generos");
 	%>
 	<!-- Header -->
 	<jsp:include page="WEB-INF/includes/header.jsp"></jsp:include>
@@ -101,14 +103,25 @@
 											title="Ver más" data-bs-toggle="modal"
 											data-bs-target="#viewAuthorModal"
 											aria-label="Ver detalles del autor"
-											data-id="<%=item.getIdAutor()%>">
+											data-id="<%=item.getIdAutor()%>"
+											data-nombre="<%=item.getNombre()%>"
+											data-nacionalidad="<%=item.getNacionalidad()%>"
+											data-id-genero-literario="<%=item.getIdGeneroLiterario()%>"
+											data-fecha-nacimiento="<%=item.getFechaNacimiento()%>"
+											data-biografia="<%=item.getBiografia()%>"
+											data-estado="<%=item.getEstado()%>">
 											<i class="bi bi-eye"></i>
 										</button>
-
 										<!-- Botón para editar el autor -->
 										<button class="btn btn-sm btn-outline-primary" title="Editar"
 											data-bs-toggle="modal" data-bs-target="#editAuthorModal"
-											aria-label="Editar autor" data-id="<%=item.getIdAutor()%>">
+											aria-label="Editar autor" data-id="<%=item.getIdAutor()%>"
+											data-nombre="<%=item.getNombre()%>"
+											data-nacionalidad="<%=item.getNacionalidad()%>"
+											data-id-genero-literario="<%=item.getIdGeneroLiterario()%>"
+											data-fecha-nacimiento="<%=item.getFechaNacimiento()%>"
+											data-biografia="<%=item.getBiografia()%>"
+											data-estado="<%=item.getEstado()%>">
 											<i class="bi bi-pencil"></i>
 										</button>
 									</div>
@@ -155,16 +168,30 @@
 							</div>
 						</div>
 						<div class="row">
+
+
+
+
 							<div class="col-md-6 mb-3">
 								<label for="addLiteraryGenre" class="form-label">Género
-									Literario</label> <select class="selectpicker form-control"
-									id="addLiteraryGenre" data-live-search="true"
-									title="Seleccione un género literario" required>
-									<option value="Realismo mágico">Realismo mágico</option>
-									<option value="Fantasía">Fantasía</option>
-									<option value="Ficción">Ficción</option>
+									Literario</label> <select class="form-control" id="addLiteraryGenre"
+									data-live-search="true" title="Seleccione un género literario"
+									required>
+									<%
+									if (listGeneroLiterario != null) {
+										for (GeneroLiterario item : listGeneroLiterario) {
+									%>
+									<option value="<%=item.getIdGeneroLiterario()%>"><%=item.getNombreGenero()%></option>
+									<%
+									}
+									}
+									%>
 								</select>
 							</div>
+
+
+
+
 							<div class="col-md-6 mb-3">
 								<label for="addAuthorBirthDate" class="form-label">Fecha
 									de Nacimiento</label> <input type="date" class="form-control"
@@ -305,13 +332,18 @@
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="editLiteraryGenre" class="form-label">Género
-									Literario</label> <select class="selectpicker form-control"
-									id="editLiteraryGenre" data-live-search="true"
-									title="Seleccione un género literario" required>
-									<option value="Realismo mágico" selected>Realismo
-										mágico</option>
-									<option value="Fantasía">Fantasía</option>
-									<option value="Ficción">Ficción</option>
+									Literario</label> <select class="form-control" id="editLiteraryGenre"
+									data-live-search="true" title="Seleccione un género literario"
+									required>
+									<%
+									if (listGeneroLiterario != null) {
+										for (GeneroLiterario item : listGeneroLiterario) {
+									%>
+									<option value="<%=item.getIdGeneroLiterario()%>"><%=item.getNombreGenero()%></option>
+									<%
+									}
+									}
+									%>
 								</select>
 							</div>
 							<div class="col-md-6 mb-3">
@@ -377,7 +409,7 @@
 	<!-- Scripts personalizados (que se cargan después de las bibliotecas) -->
 	<script src="js/alert.js"></script>
 	<script src="js/datatables-setup.js"></script>
-
+	<script src="js/autorModal.js"></script>
 	<!-- Script para DataTable -->
 	<script>
 		setupDataTable('#tablaAutores');

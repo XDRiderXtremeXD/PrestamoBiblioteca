@@ -106,10 +106,10 @@
 									<%
 									if (item.getEstado().equals("Prestado")) {
 									%> <span class="text-danger"><b>Prestado</b></span> <%
- 									} else {
- 									%> <span class="text-success"><b>Devuelto</b></span> <%
- 								}
- 							%>
+ } else {
+ %> <span class="text-success"><b>Devuelto</b></span> <%
+ }
+ %>
 								</td>
 								<td class="align-middle text-center">
 									<div class="d-inline-flex gap-2">
@@ -124,7 +124,9 @@
 											data-fecha-prestamo="<%=item.getFechaPrestamo()%>"
 											data-fecha-devolucion="<%=item.getFechaDevolucion()%>"
 											data-cantidad="<%=item.getCantidad()%>"
-											data-estado="<%=item.getEstado()%>">
+											data-estado="<%=item.getEstado()%>"
+											data-observacion="<%=item.getObservacion() != null ? item.getObservacion() : ""%>">
+
 											<i class="bi bi-eye"></i>
 										</button>
 
@@ -139,19 +141,19 @@
 										</button>
 
 										<!-- Botón para editar el préstamo -->
-<button class="btn btn-sm btn-outline-primary" title="Editar"
-    data-bs-toggle="modal" data-bs-target="#editLoanModal"
-    aria-label="Editar préstamo"
-    data-id="<%=item.getIdPrestamo()%>"
-    data-libro="<%=item.getLibro()%>"
-    data-estudiante="<%=item.getEstudiante()%>"
-    data-fecha-prestamo="<%=item.getFechaPrestamo()%>"
-    data-fecha-devolucion="<%=item.getFechaDevolucion()%>"
-    data-cantidad="<%=item.getCantidad()%>"
-    data-estado="<%=item.getEstado()%>"
-    data-observacion="<%=item.getObservacion() != null ? item.getObservacion() : "" %>">
-    <i class="bi bi-pencil"></i>
-</button>
+										<button class="btn btn-sm btn-outline-primary" title="Editar"
+											data-bs-toggle="modal" data-bs-target="#editLoanModal"
+											aria-label="Editar préstamo"
+											data-id="<%=item.getIdPrestamo()%>"
+											data-libro="<%=item.getLibro()%>"
+											data-estudiante="<%=item.getEstudiante()%>"
+											data-fecha-prestamo="<%=item.getFechaPrestamo()%>"
+											data-fecha-devolucion="<%=item.getFechaDevolucion()%>"
+											data-cantidad="<%=item.getCantidad()%>"
+											data-estado="<%=item.getEstado()%>"
+											data-observacion="<%=item.getObservacion() != null ? item.getObservacion() : ""%>">
+											<i class="bi bi-pencil"></i>
+										</button>
 									</div>
 								</td>
 							</tr>
@@ -185,33 +187,34 @@
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="addLoanBook" class="form-label">Libro</label> <select
-									class="selectpicker form-control" id="addLoanBook"
-									data-live-search="true" title="Seleccione un libro" required>
+									class="form-control" id="addLoanBook" data-live-search="true"
+									title="Seleccione un libro" required>
 									<%
-							if (listLibro != null) {
-								for (Libro item : listLibro) {
-							%>
+									if (listLibro != null) {
+										for (Libro item : listLibro) {
+									%>
 									<option value="<%=item.getIdLibro()%>"><%=item.getTitulo()%></option>
 									<%
- 								}
-							}
- 							%>
+									}
+									}
+									%>
 								</select>
 							</div>
 							<div class="col-md-6 mb-3">
 								<label for="addLoanStudent" class="form-label">Estudiante</label>
-								<select class="selectpicker form-control" id="addLoanStudent"
+								<select class="form-control" id="addLoanStudent"
 									data-live-search="true" title="Seleccione un estudiante"
 									required>
 									<%
-							if (listLibro != null) {
-								for (Estudiante item : listEstudiantes) {
-							%>
-									<option value="<%=item.getIdEstudiante()%>" name="<%=item.getIdEstudiante()%>"><%=item.getNombres()+" "+item.getApellidos()%></option>
+									if (listLibro != null) {
+										for (Estudiante item : listEstudiantes) {
+									%>
+									<option value="<%=item.getIdEstudiante()%>"
+										name="<%=item.getIdEstudiante()%>"><%=item.getNombres() + " " + item.getApellidos()%></option>
 									<%
- 								}
-							}
- 							%>
+									}
+									}
+									%>
 								</select>
 							</div>
 						</div>
@@ -373,33 +376,33 @@
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="editLoanBook" class="form-label">Libro</label> <select
-									class="selectpicker form-control" id="editLoanBook"
-									data-live-search="true" title="Seleccione un libro" required>
+									class="form-control" id="editLoanBook" data-live-search="true"
+									title="Seleccione un libro" required>
 									<%
-							if (listLibro != null) {
-								for (Libro item : listLibro) {
-							%>
+									if (listLibro != null) {
+										for (Libro item : listLibro) {
+									%>
 									<option value="<%=item.getIdLibro()%>"><%=item.getTitulo()%></option>
 									<%
- 								}
-							}
- 							%>
+									}
+									}
+									%>
 								</select>
 							</div>
 							<div class="col-md-6 mb-3">
 								<label for="editLoanStudent" class="form-label">Estudiante</label>
-								<select class="selectpicker form-control" id="editLoanStudent"
-									data-live-search="true" title="Seleccione un estudiante" name="selValuePicker"
-									required >
+								<select class="form-control" id="editLoanStudent"
+									data-live-search="true" title="Seleccione un estudiante"
+									name="selValuePicker" required>
 									<%
-							if (listLibro != null) {
-								for (Estudiante item : listEstudiantes) {
-							%>
-									<option value=<%=item.getIdEstudiante()%> ><%=item.getNombres()+" "+item.getApellidos()%></option>
+									if (listLibro != null) {
+										for (Estudiante item : listEstudiantes) {
+									%>
+									<option value=<%=item.getIdEstudiante()%>><%=item.getNombres() + " " + item.getApellidos()%></option>
 									<%
- 								}
-							}
- 							%>
+									}
+									}
+									%>
 								</select>
 							</div>
 						</div>

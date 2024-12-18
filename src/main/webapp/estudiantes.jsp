@@ -1,3 +1,4 @@
+<%@page import="entidades.Facultad"%>
 <%@page import="java.util.List"%>
 <%@page import="entidades.Estudiante"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -21,8 +22,9 @@
 <link rel="icon" href="images/favicon.ico" type="image/x-icon">
 </head>
 <body>
-<%
+	<%
 	List<Estudiante> listEstudiante = (List<Estudiante>) request.getAttribute("data");
+	List<Facultad> listFacultad = (List<Facultad>) request.getAttribute("facultades");
 	%>
 	<!-- Header -->
 	<jsp:include page="WEB-INF/includes/header.jsp"></jsp:include>
@@ -105,18 +107,42 @@
 								<td><%=item.getEstado()%></td>
 								<td class="align-middle text-center">
 									<div class="d-inline-flex gap-2">
+										>
+										<!-- Botón para ver detalles del estudiante -->
 										<button class="btn btn-sm btn-outline-secondary view-student"
+											title="Ver más" data-bs-toggle="modal"
+											data-bs-target="#viewStudentModal"
+											aria-label="Ver detalles del estudiante"
 											data-id="<%=item.getIdEstudiante()%>"
-											data-bs-toggle="modal" data-bs-target="#viewStudentModal"
-											title="Ver más" aria-label="Ver detalles del estudiante">
+											data-dni="<%=item.getDni()%>"
+											data-nombres="<%=item.getNombres()%>"
+											data-apellidos="<%=item.getApellidos()%>"
+											data-direccion="<%=item.getDireccion()%>"
+											data-telefono="<%=item.getTelefono()%>"
+											data-correo-electronico="<%=item.getCorreoElectronico()%>"
+											data-fecha-nacimiento="<%=item.getFechaNacimiento()%>"
+											data-genero="<%=item.getGenero()%>"
+											data-facultad="<%=item.getFacultad()%>"
+											data-estado="<%=item.getEstado()%>">
 											<i class="bi bi-eye"></i>
 										</button>
-
+										<!-- Botón para editar el estudiante -->
 										<button class="btn btn-sm btn-outline-primary edit-student"
+											title="Editar" data-bs-toggle="modal"
+											data-bs-target="#editStudentModal"
+											aria-label="Editar estudiante"
 											data-id="<%=item.getIdEstudiante()%>"
-											data-bs-toggle="modal" data-bs-target="#editStudentModal"
-											title="Editar" aria-label="Editar estudiante">
-											<i class="bi bi-pencil"></i>
+											data-dni="<%=item.getDni()%>"
+											data-nombres="<%=item.getNombres()%>"
+											data-apellidos="<%=item.getApellidos()%>"
+											data-direccion="<%=item.getDireccion()%>"
+											data-telefono="<%=item.getTelefono()%>"
+											data-correo-electronico="<%=item.getCorreoElectronico()%>"
+											data-fecha-nacimiento="<%=item.getFechaNacimiento()%>"
+											data-genero="<%=item.getGenero()%>"
+											data-facultad="<%=item.getFacultad()%>"
+											data-estado="<%=item.getEstado()%>">
+											<i class="bi bi-pencil""></i>
 										</button>
 									</div>
 								</td>
@@ -195,7 +221,7 @@
 							</div>
 							<div class="col-md-6 mb-3">
 								<label for="addStudentGender" class="form-label">Género</label>
-								<select class="selectpicker form-control" id="addStudentGender"
+								<select class=" form-control" id="addStudentGender"
 									title="Seleccione un género" required>
 									<option value="Masculino">Masculino</option>
 									<option value="Femenino">Femenino</option>
@@ -204,18 +230,23 @@
 						</div>
 						<div class="row">
 							<div class="col-md-6 mb-3">
-								<label for="addStudentCourse" class="form-label">Facultad</label>
-								<select class="selectpicker form-control" id="addStudentCourse"
-									data-live-search="true" title="Seleccione una facultad"
-									required>
-									<option value="Curso 1">Ingeniería</option>
-									<option value="Curso 2">Salud</option>
-									<option value="Curso 3">Humanidades</option>
+								<label for="addFaculty" class="form-label">Facultad</label> <select
+									class="form-control" id="addFaculty" data-live-search="true"
+									title="Seleccione una facultad" required>
+									<%
+									if (listFacultad != null) {
+										for (Facultad item : listFacultad) {
+									%>
+									<option value="<%=item.getIdFacultad()%>"><%=item.getNombreFacultad()%></option>
+									<%
+									}
+									}
+									%>
 								</select>
 							</div>
 							<div class="col-md-6 mb-3">
 								<label for="addStudentState" class="form-label">Estado</label> <select
-									class="selectpicker form-control" id="addStudentState"
+									class=" form-control" id="addStudentState"
 									title="Seleccione un estado" required>
 									<option value="Activo">Activo</option>
 									<option value="No Activo">Inactivo</option>
@@ -376,7 +407,7 @@
 							</div>
 							<div class="col-md-6 mb-3">
 								<label for="editstudentGender" class="form-label">Género</label>
-								<select class="selectpicker form-control" id="editstudentGender"
+								<select class=" form-control" id="editstudentGender"
 									name="editstudentGender" required>
 									<option value="Masculino" selected>Masculino</option>
 									<option value="Femenino">Femenino</option>
@@ -385,18 +416,23 @@
 						</div>
 						<div class="row">
 							<div class="col-md-6 mb-3">
-								<label for="editStudentFaculty" class="form-label">Facultad</label>
-								<select class="selectpicker form-control"
-									id="editStudentFaculty" data-live-search="true"
-									name="editStudentFaculty" required>
-									<option value="Masculino" selected>Ingeniería</option>
-									<option value="Femenino">Medicina</option>
-									<option value="Otro">Física</option>
+								<label for="editFaculty" class="form-label">Facultad</label> <select
+									class="form-control" id="editFaculty" data-live-search="true"
+									title="Seleccione una facultad" required>
+									<%
+									if (listFacultad != null) {
+										for (Facultad item : listFacultad) {
+									%>
+									<option value="<%=item.getIdFacultad()%>"><%=item.getNombreFacultad()%></option>
+									<%
+									}
+									}
+									%>
 								</select>
 							</div>
 							<div class="col-md-6 mb-3">
 								<label for="editStudentState" class="form-label">Estado</label>
-								<select class="selectpicker form-control" id="editStudentState"
+								<select class=" form-control" id="editStudentState"
 									name="editStudentState" required>
 									<option value="Activo" selected>Activo</option>
 									<option value="No Activo">Inactivo</option>
@@ -444,7 +480,7 @@
 		</div>
 	</div>
 
-	<!-- Scripts de bibliotecas externas -->
+	<!-- Scripts de bibliotecas externas   -->
 	<script src="js/color-modes.js"></script>
 	<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 	<script
@@ -464,7 +500,7 @@
 	<!-- Scripts personalizados (que se cargan después de las bibliotecas) -->
 	<script src="js/alert.js"></script>
 	<script src="js/datatables-setup.js"></script>
-
+<script src="js/estudianteModal.js"></script>
 	<!-- Script para DataTable -->
 	<script>
 		setupDataTable('#tablaEstudiantes');

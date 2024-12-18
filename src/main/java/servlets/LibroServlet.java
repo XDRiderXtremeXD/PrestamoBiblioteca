@@ -9,7 +9,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import entidades.Autor;
+import entidades.Editorial;
+import entidades.GeneroLiterario;
 import entidades.Libro;
+import modelos.AutorModel;
+import modelos.EditorialesModel;
+import modelos.GeneroLiterarioModel;
 import modelos.LibroModel;
 
 /**
@@ -53,6 +59,18 @@ public class LibroServlet extends HttpServlet {
 		LibroModel libroModel = new LibroModel();
 		List<Libro> data=libroModel.listLibro();
 		
+		AutorModel autorModel = new AutorModel();
+		List<Autor> autores=autorModel.listAutor();
+		
+		GeneroLiterarioModel generoLiterarioModel = new GeneroLiterarioModel();
+		List<GeneroLiterario> generos=generoLiterarioModel.listGeneroLiterario();
+		
+		EditorialesModel editorialModel = new EditorialesModel();
+		List<Editorial> editoriales=editorialModel.listEditorial();
+		
+		request.setAttribute("autores", autores);
+		request.setAttribute("generos", generos);
+		request.setAttribute("editoriales",editoriales);
 		request.setAttribute("data", data);
 		request.getRequestDispatcher("libros.jsp").forward(request, response);
 	}

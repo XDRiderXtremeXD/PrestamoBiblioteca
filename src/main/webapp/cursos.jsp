@@ -95,19 +95,27 @@
 								<td><%=item.getEstado()%></td>
 								<td class="align-middle text-center">
 									<div class="d-inline-flex gap-2">
+										>
 										<!-- Botón para ver detalles del curso -->
 										<button class="btn btn-sm btn-outline-secondary"
 											title="Ver más" data-bs-toggle="modal"
 											data-bs-target="#viewCourseModal"
 											aria-label="Ver detalles del curso"
-											data-id="<%=item.getIdCurso()%>">
+											data-id="<%=item.getIdCurso()%>"
+											data-nombre="<%=item.getNombre()%>"
+											data-nivel="<%=item.getNivel()%>"
+											data-descripcion="<%=item.getDescripcion()%>"
+											data-estado="<%=item.getEstado()%>">
 											<i class="bi bi-eye"></i>
 										</button>
-
 										<!-- Botón para editar el curso -->
 										<button class="btn btn-sm btn-outline-primary" title="Editar"
 											data-bs-toggle="modal" data-bs-target="#editCourseModal"
-											aria-label="Editar curso" data-id="<%=item.getIdCurso()%>">
+											aria-label="Editar curso" data-id="<%=item.getIdCurso()%>"
+											data-nombre="<%=item.getNombre()%>"
+											data-nivel="<%=item.getNivel()%>"
+											data-descripcion="<%=item.getDescripcion()%>"
+											data-estado="<%=item.getEstado()%>">
 											<i class="bi bi-pencil"></i>
 										</button>
 									</div>
@@ -119,8 +127,8 @@
 							%>
 						</tbody>
 					</table>
-				</div>
-			</section>
+			</div>
+		</section>
 		</section>
 	</main>
 
@@ -146,7 +154,7 @@
 							</div>
 							<div class="col-md-6 mb-3">
 								<label for="addCourseLevel" class="form-label">Nivel</label> <select
-									class="selectpicker form-control" id="addCourseLevel"
+									class=" form-control" id="addCourseLevel"
 									title="Seleccione un nivel" required>
 									<option value="Básico">Básico</option>
 									<option value="Intermedio">Intermedio</option>
@@ -157,7 +165,7 @@
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="addCourseState" class="form-label">Estado</label> <select
-									class="selectpicker form-control" id="addCourseState"
+									class=" form-control" id="addCourseState"
 									title="Seleccione un estado" required>
 									<option value="Activo">Activo</option>
 									<option value="No Activo">Inactivo</option>
@@ -255,7 +263,7 @@
 							</div>
 							<div class="col-md-6 mb-3">
 								<label for="editCourseLevel" class="form-label">Nivel</label> <select
-									class="selectpicker form-control" id="editCourseLevel"
+									class=" form-control" id="editCourseLevel"
 									name="editCourseLevel" required>
 									<option value="Básico">Básico</option>
 									<option value="Intermedio" selected>Intermedio</option>
@@ -266,7 +274,7 @@
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="editCourseState" class="form-label">Estado</label> <select
-									class="selectpicker form-control" id="editCourseState"
+									class=" form-control" id="editCourseState"
 									name="editCourseState" required>
 									<option value="Activo" selected>Activo</option>
 									<option value="No Activo">Inactivo</option>
@@ -312,8 +320,8 @@
 	<!-- Scripts personalizados (que se cargan después de las bibliotecas) -->
 	<script src="js/alert.js"></script>
 	<script src="js/datatables-setup.js"></script>
-
-	<!-- Script para DataTable -->
+	<script src="js/cursosModal.js"></script>
+	<!-- Script para DataTable  -->
 	<script>
 		setupDataTable('#tablaCursos');
 	</script>
