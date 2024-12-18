@@ -1,102 +1,133 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.List"%>
+<%@page import="entidades.Libro"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="es" data-bs-theme="auto">
 <head>
-	<meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/css/bootstrap-select.min.css">
-    <link rel="stylesheet" href="css/sidebars.css">
-    <title>BookStudio</title>
-    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link rel="stylesheet"
+	href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css">
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/css/bootstrap-select.min.css">
+<link rel="stylesheet" href="css/sidebars.css">
+<title>BookStudio</title>
+<link rel="icon" href="images/favicon.ico" type="image/x-icon">
 </head>
 <body>
+	<%
+	List<Libro> listLibro = (List<Libro>) request.getAttribute("data");
+	%>
 	<!-- Header -->
 	<jsp:include page="WEB-INF/includes/header.jsp"></jsp:include>
-	
+
 	<!-- Sidebars -->
 	<jsp:include page="WEB-INF/includes/sidebar.jsp">
-   		<jsp:param name="currentPage" value="libros.jsp" />
+		<jsp:param name="currentPage" value="libros.jsp" />
 	</jsp:include>
-		
+
 	<!-- Contenido Principal -->
 	<main class="p-4 bg-body-tertiary">
-	
-	    <!-- Tarjeta -->
-	    <section class="card border">
-	    
-	        <header class="card-header d-flex align-items-center"> 
-	            <h5 class="card-title text-center mb-0 text-body-emphasis">Tabla Libros</h5>
-	        </header>
-	        
-	        <div class="card-body">
-	        
-	            <!-- Controles de Interacción -->
-	            <section class="row g-3 mb-2 align-items-center">
-	        
-	                <!-- Botón Agregar -->
-	                <div class="col-12 col-md-6 d-flex justify-content-center justify-content-md-start mb-3 mb-md-0">
-	                    <button class="btn btn-success d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#addBookModal" aria-label="Agregar libro">
-	                        <i class="bi bi-plus-circle me-2"></i>
-	                        Agregar
-	                    </button>
-	                </div>
-	                
-	                <!-- Barra de búsqueda -->
-	                <div class="col-12 col-md-6 d-flex justify-content-center justify-content-md-end align-items-center">
-	                    <label for="customSearch" class="visually-hidden">Buscar libro</label>
-	                    <input type="text" id="customSearch" class="form-control me-2 w-100 w-md-auto" placeholder="Buscar..." style="max-width: 200px;">
-	                    <button class="btn btn-primary" aria-label="Iniciar búsqueda">Buscar</button>
-	                </div>
-	            </section>
-	
-	            <!-- Tabla de Libros -->
-	            <section class="table-responsive small">
-	                <table id="tablaLibros" class="table table-striped table-sm">
-	                    <thead>
-	                        <tr>
-	                            <th scope="col">ID</th>
-	                            <th scope="col">Título</th>
-	                            <th scope="col">Ejemplares Disponibles</th>
-	                            <th scope="col">Ejemplares Prestados</th>
-	                            <th scope="col">Autor</th>
-	                            <th scope="col">Editorial</th>
-	                            <th scope="col">Curso</th>
-	                            <th scope="col">Estado</th>
-	                            <th scope="col" class="text-center">Acciones</th>
-	                        </tr>
-	                    </thead>
-	                    <tbody>
-	                        <tr>
-	                            <td class="align-middle">1</td>
-	                            <td class="align-middle">Matemáticas Básicas</td>
-	                            <td class="align-middle">50</td>
-	                            <td class="align-middle">40</td>
-	                            <td class="align-middle">Juan López</td>
-	                            <td class="align-middle">HarperCollins</td>
-	                            <td class="align-middle">Matemáticas</td>
-	                            <td class="align-middle text-success">Activo</td>
-	                            <td class="align-middle text-center">
-	                                <div class="d-inline-flex gap-2">
-	                                    <button class="btn btn-sm btn-outline-secondary" title="Ver más" data-bs-toggle="modal" data-bs-target="#viewBookModal" aria-label="Ver detalles del libro">
-	                                        <i class="bi bi-eye"></i>
-	                                    </button>
-	                                    <button class="btn btn-sm btn-outline-primary" title="Editar" data-bs-toggle="modal" data-bs-target="#editBookModal" aria-label="Editar libro">
-	                                        <i class="bi bi-pencil"></i>
-	                                    </button>
-	                                </div>
-	                            </td>
-	                        </tr>
-	                    </tbody>
-	                </table>
-	            </section>
-	        </div>
-	    </section>
+
+		<!-- Tarjeta -->
+		<section class="card border">
+
+			<header class="card-header d-flex align-items-center">
+				<h5 class="card-title text-center mb-0 text-body-emphasis">Tabla
+					Libros</h5>
+			</header>
+
+			<div class="card-body">		
+
+				<!-- Controles de Interacción -->
+				<section class="row g-3 mb-2 align-items-center">
+
+					<!-- Botón Agregar -->
+					<div
+						class="col-12 col-md-6 d-flex justify-content-center justify-content-md-start mb-3 mb-md-0">
+						<button class="btn btn-success d-flex align-items-center"
+							data-bs-toggle="modal" data-bs-target="#addBookModal"
+							aria-label="Agregar libro">
+							<i class="bi bi-plus-circle me-2"></i> Agregar
+						</button>
+					</div>
+
+					<!-- Barra de búsqueda -->
+					<div
+						class="col-12 col-md-6 d-flex justify-content-center justify-content-md-end align-items-center">
+						<label for="customSearch" class="visually-hidden">Buscar
+							libro</label> <input type="text" id="customSearch"
+							class="form-control me-2 w-100 w-md-auto" placeholder="Buscar..."
+							style="max-width: 200px;">
+						<button class="btn btn-primary" aria-label="Iniciar búsqueda">Buscar</button>
+					</div>
+				</section>
+
+				<!-- Tabla de Libros -->
+				<section class="table-responsive small">
+					<table id="tablaLibros" class="table table-striped table-sm">
+						<thead>
+							<tr>
+								<th scope="col">ID</th>
+								<th scope="col">Título</th>
+								<th scope="col">Ejemplares Disponibles</th>
+								<th scope="col">Ejemplares Prestados</th>
+								<th scope="col">Autor</th>
+								<th scope="col">Editorial</th>
+								<th scope="col">Curso</th>
+								<th scope="col">Estado</th>
+								<th scope="col" class="text-center">Acciones</th>
+							</tr>
+						</thead>
+						<tbody>
+							<%
+							if (listLibro != null) {
+								for (Libro item : listLibro) {
+							%>
+							<tr>
+								<td><%=item.getIdLibro()%></td>
+								<td><%=item.getTitulo()%></td>
+								<td><%=item.getEjemplaresDisponibles()%></td>
+								<td><%=item.getEjemplaresPrestados()%></td>
+								<td><%=item.getAutor()%></td>
+								<td><%=item.getEditorial()%></td>
+								<td><%=item.getCurso()%></td>
+								<td><%=item.getEstado()%></td>
+								<td class="align-middle text-center">
+								<div class="d-inline-flex gap-2">
+										<button class="btn btn-sm btn-outline-secondary view-book"
+											data-id="<%=item.getIdLibro()%>" data-bs-toggle="modal"
+											data-bs-target="#viewBookModal" title="Ver más"
+											aria-label="Ver detalles del libro">
+											<i class="bi bi-eye"></i>
+										</button>
+
+										<button class="btn btn-sm btn-outline-primary edit-book"
+											data-id="<%=item.getIdLibro()%>" data-bs-toggle="modal"
+											data-bs-target="#editBookModal" title="Editar"
+											aria-label="Editar libro">
+											<i class="bi bi-pencil"></i>
+										</button>
+									</div>
+	                                </td>
+							</tr>
+							<%
+							}
+							}
+							%>
+						</tbody>
+					</table>
+				</section>
+			</div>
+		</section>
 	</main>
-	
+
 	<!-- Modal de Agregar -->
 	<div class="modal fade" id="addBookModal" tabindex="-1" aria-labelledby="addBookModalLabel" aria-hidden="true">
 	    <div class="modal-dialog modal-lg">
@@ -162,7 +193,8 @@
 	                        </div>
 	                        <div class="col-md-6 mb-3">
 	                            <label for="addBookState" class="form-label">Estado</label>
-	                            <select class="selectpicker form-control" id="addBookState" title="Seleccione un estado" required>
+	                            <select class="selectpicker form-control" id="addBookState" name="addBookState" required>
+	                                <option value="" selected disabled>Seleccione un estado</option>
 	                                <option value="Activo">Activo</option>
 	                                <option value="No Activo">Inactivo</option>
 	                            </select>
@@ -327,7 +359,6 @@
 	</div>
 	
 	<!-- Scripts de bibliotecas externas -->
-	<script src="js/color-modes.js"></script>
 	<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
@@ -338,6 +369,7 @@
     <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
 	
 	<!-- Scripts personalizados (que se cargan después de las bibliotecas) -->
+    <script src="js/color-modes.js"></script>
     <script src="js/alert.js"></script>
     <script src="js/datatables-setup.js"></script>
     

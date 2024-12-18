@@ -4,7 +4,7 @@ public class Editorial {
 	   private int idEditorial;
 	    private String nombre;
 	    private String nacionalidad;
-	    private int idGeneroLiterario;
+	    private String generoLiterario;
 	    private String foto;
 	    private int anioFundacion;
 	    private String paginaWeb;
@@ -28,11 +28,11 @@ public class Editorial {
 		public void setNacionalidad(String nacionalidad) {
 			this.nacionalidad = nacionalidad;
 		}
-		public int getIdGeneroLiterario() {
-			return idGeneroLiterario;
+		public String getGeneroLiterario() {
+			return generoLiterario;
 		}
-		public void setIdGeneroLiterario(int idGeneroLiterario) {
-			this.idGeneroLiterario = idGeneroLiterario;
+		public void setGeneroLiterario(String GeneroLiterario) {
+			this.generoLiterario = GeneroLiterario;
 		}
 		public String getFoto() {
 			return foto;

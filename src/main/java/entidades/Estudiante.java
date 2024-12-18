@@ -12,7 +12,7 @@ public class Estudiante {
     private String correoElectronico;
     private Date fechaNacimiento;
     private String genero;
-    private int idFacultad;
+    private String facultad;
     private String estado;
 	public int getIdEstudiante() {
 		return idEstudiante;
@@ -68,11 +68,11 @@ public class Estudiante {
 	public void setGenero(String genero) {
 		this.genero = genero;
 	}
-	public int getIdFacultad() {
-		return idFacultad;
+	public String getFacultad() {
+		return facultad;
 	}
-	public void setIdFacultad(int idFacultad) {
-		this.idFacultad = idFacultad;
+	public void setFacultad(String facultad) {
+		this.facultad = facultad;
 	}
 	public String getEstado() {
 		return estado;

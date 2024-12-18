@@ -7,12 +7,20 @@ public class Libro {
     private String titulo;
     private int ejemplaresTotales;
     private int ejemplaresPrestados;
-    private int idAutor;
-    private int idEditorial;
-    private int idCurso;
+    private int ejemplaresDisponibles;
+    private String autor;
+    private String editorial;
+    private String curso;
     private Date fechaLanzamiento;
     private String genero;
     private String estado;
+    
+	public int getEjemplaresDisponibles() {
+		return ejemplaresDisponibles;
+	}
+	public void setEjemplaresDisponibles(int ejemplaresDisponibles) {
+		this.ejemplaresDisponibles = ejemplaresDisponibles;
+	}
 	public int getIdLibro() {
 		return idLibro;
 	}
@@ -36,24 +44,7 @@ public class Libro {
 	}
 	public void setEjemplaresPrestados(int ejemplaresPrestados) {
 		this.ejemplaresPrestados = ejemplaresPrestados;
-	}
-	public int getIdAutor() {
-		return idAutor;
-	}
-	public void setIdAutor(int idAutor) {
-		this.idAutor = idAutor;
-	}
-	public int getIdEditorial() {
-		return idEditorial;
-	}
-	public void setIdEditorial(int idEditorial) {
-		this.idEditorial = idEditorial;
-	}
-	public int getIdCurso() {
-		return idCurso;
-	}
-	public void setIdCurso(int idCurso) {
-		this.idCurso = idCurso;
+		setEjemplaresDisponibles(ejemplaresTotales-ejemplaresPrestados);
 	}
 	public Date getFechaLanzamiento() {
 		return fechaLanzamiento;
@@ -72,6 +63,24 @@ public class Libro {
 	}
 	public void setEstado(String estado) {
 		this.estado = estado;
+	}
+	public String getAutor() {
+		return autor;
+	}
+	public void setAutor(String autor) {
+		this.autor = autor;
+	}
+	public String getEditorial() {
+		return editorial;
+	}
+	public void setEditorial(String editorial) {
+		this.editorial = editorial;
+	}
+	public String getCurso() {
+		return curso;
+	}
+	public void setCurso(String curso) {
+		this.curso = curso;
 	}
     
     
