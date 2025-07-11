@@ -99,6 +99,7 @@
 								<th scope="col">Autor</th>
 								<th scope="col">Editorial</th>
 								<th scope="col">Curso</th>
+								<th scope="col">Estado</th>
 								<th scope="col" class="text-center">Acciones</th>
 							</tr>
 						</thead>
@@ -115,6 +116,7 @@
 								<td><%=item.getAutor()%></td>
 								<td><%=item.getEditorial()%></td>
 								<td><%=item.getCurso()%></td>
+								<td><%=item.getEstado()%></td>
 								<td class="align-middle text-center">
 									<div class="d-inline-flex gap-2">
 										<!-- Botón para ver detalles del libro -->

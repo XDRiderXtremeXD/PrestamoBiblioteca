@@ -13,240 +13,170 @@ import utils.MySqlConexion;
 
 public class AutorModel implements AutoresInterface {
 
+    /**
+     * Inserta un nuevo autor en la base de datos
+     */
     @Override
     public int createAutor(Autor autor) {
-        int result = 0;
-        // Variables para la conexión y la consulta
-        Connection cn = null;
-        PreparedStatement psm = null;
+        String sql = """
+            INSERT INTO Autor 
+            (Nombre, Nacionalidad, IDGeneroLiterario, FechaNacimiento, Foto, Biografia, Estado) 
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """;
 
-        try {
-            // Establecer la conexión con la base de datos
-            cn = MySqlConexion.getConexion();
+        try (Connection cn = MySqlConexion.getConexion();
+             PreparedStatement ps = cn.prepareStatement(sql)) {
 
-            // SQL para insertar un nuevo autor
-            String sql = "INSERT INTO AUTOR (Nombre, Nacionalidad, IdGeneroLiterario, FechaNacimiento, Foto, Biografia, Estado) "
-                       + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+            ps.setString(1, autor.getNombre());
+            ps.setString(2, autor.getNacionalidad());
+            ps.setInt(3, autor.getIdGeneroLiterario());
+            ps.setDate(4, autor.getFechaNacimiento());
+            ps.setBytes(5, autor.getFoto());
+            ps.setString(6, autor.getBiografia());
+            ps.setString(7, autor.getEstado());
 
-            // Preparar la sentencia SQL
-            psm = cn.prepareStatement(sql);
-            psm.setString(1, autor.getNombre());
-            psm.setString(2, autor.getNacionalidad());
-            psm.setInt(3, autor.getIdGeneroLiterario());
-            psm.setDate(4, autor.getFechaNacimiento());
-            psm.setBytes(5, autor.getFoto());
-            psm.setString(6, autor.getBiografia());
-            psm.setString(7, autor.getEstado());
-
-            // Ejecutar la inserción
-            result = psm.executeUpdate();
+            return ps.executeUpdate();
 
         } catch (SQLException e) {
-            // Manejo de excepciones
             e.printStackTrace();
-        } finally {
-            // Cerrar recursos
-            try {
-                if (psm != null) psm.close();
-                if (cn != null) cn.close();
-            } catch (SQLException e2) {
-                e2.printStackTrace();
-            }
+            return 0;
         }
-
-        return result;  // Retornar el número de registros afectados
     }
 
+    /**
+     * Actualiza los datos de un autor
+     */
     @Override
     public int updateAutor(Autor autor) {
-        int result = 0;
-        // Variables para la conexión y la consulta
-        Connection cn = null;
-        PreparedStatement psm = null;
+        String sql = """
+            UPDATE Autor 
+            SET Nombre = ?, Nacionalidad = ?, IDGeneroLiterario = ?, 
+                FechaNacimiento = ?, Foto = ?, Biografia = ?, Estado = ?
+            WHERE IDAutor = ?
+        """;
 
-        try {
-            // Establecer la conexión con la base de datos
-            cn = MySqlConexion.getConexion();
+        try (Connection cn = MySqlConexion.getConexion();
+             PreparedStatement ps = cn.prepareStatement(sql)) {
 
-            // SQL para actualizar un autor existente
-            String sql = "UPDATE AUTOR SET Nombre = ?, Nacionalidad = ?, IdGeneroLiterario = ?, FechaNacimiento = ?, Foto = ?, Biografia = ?, Estado = ? "
-                       + "WHERE IdAutor = ?";
+            ps.setString(1, autor.getNombre());
+            ps.setString(2, autor.getNacionalidad());
+            ps.setInt(3, autor.getIdGeneroLiterario());
+            ps.setDate(4, autor.getFechaNacimiento());
+            ps.setBytes(5, autor.getFoto());
+            ps.setString(6, autor.getBiografia());
+            ps.setString(7, autor.getEstado());
+            ps.setInt(8, autor.getIdAutor());
 
-            // Preparar la sentencia SQL
-            psm = cn.prepareStatement(sql);
-            psm.setString(1, autor.getNombre());
-            psm.setString(2, autor.getNacionalidad());
-            psm.setInt(3, autor.getIdGeneroLiterario());
-            psm.setDate(4, autor.getFechaNacimiento());
-            psm.setBytes(5, autor.getFoto());
-            psm.setString(6, autor.getBiografia());
-            psm.setString(7, autor.getEstado());
-            psm.setInt(8, autor.getIdAutor());
-
-            // Ejecutar la actualización
-            result = psm.executeUpdate();
+            return ps.executeUpdate();
 
         } catch (SQLException e) {
-            // Manejo de excepciones
             e.printStackTrace();
-        } finally {
-            // Cerrar recursos
-            try {
-                if (psm != null) psm.close();
-                if (cn != null) cn.close();
-            } catch (SQLException e2) {
-                e2.printStackTrace();
-            }
+            return 0;
         }
-
-        return result;  // Retornar el número de registros afectados
     }
 
+    /**
+     * Elimina un autor por su ID
+     */
     @Override
     public int deleteAutor(int id) {
-        int result = 0;
-        // Variables para la conexión y la consulta
-        Connection cn = null;
-        PreparedStatement psm = null;
+        String sql = "DELETE FROM Autor WHERE IDAutor = ?";
 
-        try {
-            // Establecer la conexión con la base de datos
-            cn = MySqlConexion.getConexion();
+        try (Connection cn = MySqlConexion.getConexion();
+             PreparedStatement ps = cn.prepareStatement(sql)) {
 
-            // SQL para eliminar un autor
-            String sql = "DELETE FROM AUTOR WHERE IdAutor = ?";
-
-            // Preparar la sentencia SQL
-            psm = cn.prepareStatement(sql);
-            psm.setInt(1, id);
-
-            // Ejecutar la eliminación
-            result = psm.executeUpdate();
+            ps.setInt(1, id);
+            return ps.executeUpdate();
 
         } catch (SQLException e) {
-            // Manejo de excepciones
             e.printStackTrace();
-        } finally {
-            // Cerrar recursos
-            try {
-                if (psm != null) psm.close();
-                if (cn != null) cn.close();
-            } catch (SQLException e2) {
-                e2.printStackTrace();
-            }
+            return 0;
         }
-
-        return result;  // Retornar el número de registros afectados
     }
 
+    /**
+     * Lista autores aplicando filtro por nombre, nacionalidad o género literario
+     */
     @Override
-    public List<Autor> listAutor() {
-        List<Autor> listAutores = new ArrayList<Autor>();
+    public List<Autor> listAutor(String filtro) {
+        List<Autor> autores = new ArrayList<>();
 
-        // Variables para la conexión y la consulta
-        Connection cn = null;
-        PreparedStatement psm = null;
-        ResultSet rs = null;
+        String sql = """
+            SELECT a.*, g.NombreGenero 
+            FROM Autor a
+            JOIN GeneroLiterario g ON a.IDGeneroLiterario = g.IDGeneroLiterario
+            WHERE (
+                a.Nombre LIKE ? 
+                OR a.Nacionalidad LIKE ? 
+                OR g.NombreGenero LIKE ?
+            )
+            AND a.Estado = 'activo'
+        """;
 
-        try {
-            // Establecer la conexión con la base de datos
-            cn = MySqlConexion.getConexion();
+        try (Connection cn = MySqlConexion.getConexion();
+             PreparedStatement ps = cn.prepareStatement(sql)) {
 
-            // SQL para obtener los autores
-            String sql = "SELECT * FROM AUTOR";
+            String filtroLike = filtro + "%";
+            ps.setString(1, filtroLike);
+            ps.setString(2, filtroLike);
+            ps.setString(3, filtroLike);
 
-            // Preparar la sentencia SQL
-            psm = cn.prepareStatement(sql);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Autor a = new Autor();
+                    a.setIdAutor(rs.getInt("IDAutor"));
+                    a.setNombre(rs.getString("Nombre"));
+                    a.setNacionalidad(rs.getString("Nacionalidad"));
+                    a.setIdGeneroLiterario(rs.getInt("IDGeneroLiterario"));
+                    a.setFechaNacimiento(rs.getDate("FechaNacimiento"));
+                    a.setFoto(rs.getBytes("Foto"));
+                    a.setBiografia(rs.getString("Biografia"));
+                    a.setEstado(rs.getString("Estado"));
+                    a.setNombreGenero(rs.getString("NombreGenero")); // De la tabla GeneroLiterario
 
-            // Ejecutar la consulta
-            rs = psm.executeQuery();
-
-            // Recorrer los resultados de la consulta
-            while (rs.next()) {
-                Autor autor = new Autor();
-
-                // Asignar los resultados a los atributos del autor
-                autor.setIdAutor(rs.getInt("IdAutor"));
-                autor.setNombre(rs.getString("Nombre"));
-                autor.setNacionalidad(rs.getString("Nacionalidad"));
-                autor.setIdGeneroLiterario(rs.getInt("IdGeneroLiterario"));
-                autor.setFechaNacimiento(rs.getDate("FechaNacimiento"));
-                autor.setFoto(rs.getBytes("Foto"));
-                autor.setBiografia(rs.getString("Biografia"));
-                autor.setEstado(rs.getString("Estado"));
-
-                // Agregar el autor a la lista
-                listAutores.add(autor);
+                    autores.add(a);
+                }
             }
 
         } catch (SQLException e) {
-            // Manejo de excepciones
             e.printStackTrace();
-        } finally {
-            // Cerrar recursos
-            try {
-                if (rs != null) rs.close();
-                if (psm != null) psm.close();
-                if (cn != null) cn.close();
-            } catch (SQLException e2) {
-                e2.printStackTrace();
-            }
         }
 
-        return listAutores;  // Devolver la lista de autores
+        return autores;
     }
 
+    /**
+     * Obtiene un autor por su ID
+     */
     @Override
     public Autor getAutor(int id) {
-        Autor autor = null;
+        String sql = "SELECT * FROM Autor WHERE IDAutor = ?";
 
-        // Variables para la conexión y la consulta
-        Connection cn = null;
-        PreparedStatement psm = null;
-        ResultSet rs = null;
+        try (Connection cn = MySqlConexion.getConexion();
+             PreparedStatement ps = cn.prepareStatement(sql)) {
 
-        try {
-            // Establecer la conexión con la base de datos
-            cn = MySqlConexion.getConexion();
+            ps.setInt(1, id);
 
-            // SQL para obtener un autor por su ID
-            String sql = "SELECT * FROM AUTOR WHERE IdAutor = ?";
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Autor a = new Autor();
+                    a.setIdAutor(rs.getInt("IDAutor"));
+                    a.setNombre(rs.getString("Nombre"));
+                    a.setNacionalidad(rs.getString("Nacionalidad"));
+                    a.setIdGeneroLiterario(rs.getInt("IDGeneroLiterario"));
+                    a.setFechaNacimiento(rs.getDate("FechaNacimiento"));
+                    a.setFoto(rs.getBytes("Foto"));
+                    a.setBiografia(rs.getString("Biografia"));
+                    a.setEstado(rs.getString("Estado"));
 
-            // Preparar la sentencia SQL
-            psm = cn.prepareStatement(sql);
-            psm.setInt(1, id);
-
-            // Ejecutar la consulta
-            rs = psm.executeQuery();
-
-            // Si se encuentra el autor, asignarlo a la variable
-            if (rs.next()) {
-                autor = new Autor();
-
-                autor.setIdAutor(rs.getInt("IdAutor"));
-                autor.setNombre(rs.getString("Nombre"));
-                autor.setNacionalidad(rs.getString("Nacionalidad"));
-                autor.setIdGeneroLiterario(rs.getInt("IdGeneroLiterario"));
-                autor.setFechaNacimiento(rs.getDate("FechaNacimiento"));
-                autor.setFoto(rs.getBytes("Foto"));
-                autor.setBiografia(rs.getString("Biografia"));
-                autor.setEstado(rs.getString("Estado"));
+                    return a;
+                }
             }
 
         } catch (SQLException e) {
-            // Manejo de excepciones
             e.printStackTrace();
-        } finally {
-            // Cerrar recursos
-            try {
-                if (rs != null) rs.close();
-                if (psm != null) psm.close();
-                if (cn != null) cn.close();
-            } catch (SQLException e2) {
-                e2.printStackTrace();
-            }
         }
 
-        return autor;  // Devolver el autor o null si no se encontró
+        return null;
     }
 }

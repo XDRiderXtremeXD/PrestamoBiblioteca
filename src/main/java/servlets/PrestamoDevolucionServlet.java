@@ -58,7 +58,6 @@ public class PrestamoDevolucionServlet extends HttpServlet {
 	private void changeState(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		System.out.println("aca");
 		// Obtener los parámetros de la solicitud
 		int idPrestamo = Integer.parseInt(request.getParameter("idPrestamo"));
 		String nuevoEstado = request.getParameter("nuevoEstado");
@@ -93,7 +92,7 @@ public class PrestamoDevolucionServlet extends HttpServlet {
 			throws ServletException, IOException {
 		
 		String filtro = request.getParameter("filtro");
-		System.out.println(filtro);
+		System.out.println("filtro prestamo "+filtro);
 		PrestamoDevolucionModel model = new PrestamoDevolucionModel();
 		List<PrestamoDevolucion> data = model.listPrestamo(filtro==null?"":filtro);		
 

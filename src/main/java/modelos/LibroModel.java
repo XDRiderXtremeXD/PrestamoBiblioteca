@@ -135,11 +135,10 @@ public class LibroModel implements LibroInterface {
 	            INNER JOIN Editorial ed ON l.IDEditorial = ed.IDEditorial
 	            INNER JOIN Curso c ON l.IDCurso = c.IDCurso
 	            WHERE 
-                    (l.Titulo LIKE ? OR
+                    l.Titulo LIKE ? OR
                     a.Nombre LIKE ? OR
                     ed.Nombre LIKE ? OR
-                    c.Nombre LIKE ?)
-                    AND l.Estado = 'activo'
+                    c.Nombre LIKE ?
 	        """;
 
 	        psm = cn.prepareStatement(sql);
