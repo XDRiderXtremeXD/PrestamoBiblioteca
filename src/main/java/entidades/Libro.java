@@ -7,7 +7,7 @@ public class Libro {
     private String titulo;
     private int ejemplaresTotales;
     private int ejemplaresPrestados;
-    private int ejemplaresDisponibles;
+    private int ejemplaresDisponibles; 
     private String autor;
     private String editorial;
     private String curso;

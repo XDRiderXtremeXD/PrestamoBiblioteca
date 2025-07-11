@@ -87,7 +87,8 @@ public class PrestamoDevolucionModel implements PrestamoInterface {
 
 
     @Override
-    public List<PrestamoDevolucion> listPrestamo() {
+    public List<PrestamoDevolucion> listPrestamo(String filtro) {
+
         List<PrestamoDevolucion> listPrestamos = new ArrayList<>();
         Connection cn = null;
         PreparedStatement psm = null;
@@ -95,6 +96,8 @@ public class PrestamoDevolucionModel implements PrestamoInterface {
 
         try {
             cn = MySqlConexion.getConexion();
+            
+            // Consulta SQL con filtro para nombres de libro y estudiante que empiezan con el valor de 'filtro'
             String sql = """
                 SELECT 
                     pd.IDPrestamo, 
@@ -112,11 +115,25 @@ public class PrestamoDevolucionModel implements PrestamoInterface {
                     Libro l ON pd.IDLibro = l.IDLibro
                 INNER JOIN 
                     Estudiante e ON pd.IDEstudiante = e.IDEstudiante
+                WHERE 
+                    l.Titulo LIKE ? OR 
+                    (e.Nombres LIKE ? OR e.Apellidos LIKE ?)
             """;
 
+            // Prepara la consulta y establece los parámetros
             psm = cn.prepareStatement(sql);
+            
+            // Parámetros de filtro para que los nombres empiecen con el valor dado
+            String filtroLike = filtro + "%"; // Se agrega '%' al final para hacer el filtro 'starts with'
+            
+            psm.setString(1, filtroLike); // Filtra por Titulo del libro
+            psm.setString(2, filtroLike); // Filtra por Nombres del estudiante
+            psm.setString(3, filtroLike); // Filtra por Apellidos del estudiante
+
+            // Ejecuta la consulta
             rs = psm.executeQuery();
 
+            // Procesa los resultados
             while (rs.next()) {
                 PrestamoDevolucion prestamoDevolucion = new PrestamoDevolucion();
                 prestamoDevolucion.setIdPrestamo(rs.getInt("IDPrestamo"));
@@ -130,7 +147,7 @@ public class PrestamoDevolucionModel implements PrestamoInterface {
 
                 listPrestamos.add(prestamoDevolucion);
             }
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             try {
@@ -227,79 +244,4 @@ public class PrestamoDevolucionModel implements PrestamoInterface {
         return 0;
     }
 
-    public List<PrestamoDevolucion> listPrestamoFilter(String filtro) {
-        // TODO Auto-generated method stub
-        
-        List<PrestamoDevolucion> listPrestamos = new ArrayList<>();
-        Connection cn = null;
-        PreparedStatement psm = null;
-        ResultSet rs = null;
-
-        try {
-            cn = MySqlConexion.getConexion();
-            
-            // Consulta SQL con filtro para nombres de libro y estudiante que empiezan con el valor de 'filtro'
-            String sql = """
-                SELECT 
-                    pd.IDPrestamo, 
-                    pd.FechaPrestamo, 
-                    pd.FechaDevolucion, 
-                    pd.Cantidad, 
-                    pd.Estado, 
-                    pd.Observacion,
-                    l.Titulo AS NombreLibro,
-                    e.Nombres AS NombreEstudiante,
-                    e.Apellidos AS ApellidoEstudiante
-                FROM 
-                    Prestamo_Devolucion pd
-                INNER JOIN 
-                    Libro l ON pd.IDLibro = l.IDLibro
-                INNER JOIN 
-                    Estudiante e ON pd.IDEstudiante = e.IDEstudiante
-                WHERE 
-                    l.Titulo LIKE ? OR 
-                    (e.Nombres LIKE ? OR e.Apellidos LIKE ?)
-            """;
-
-            // Prepara la consulta y establece los parámetros
-            psm = cn.prepareStatement(sql);
-            
-            // Parámetros de filtro para que los nombres empiecen con el valor dado
-            String filtroLike = filtro + "%"; // Se agrega '%' al final para hacer el filtro 'starts with'
-            
-            psm.setString(1, filtroLike); // Filtra por Titulo del libro
-            psm.setString(2, filtroLike); // Filtra por Nombres del estudiante
-            psm.setString(3, filtroLike); // Filtra por Apellidos del estudiante
-
-            // Ejecuta la consulta
-            rs = psm.executeQuery();
-
-            // Procesa los resultados
-            while (rs.next()) {
-                PrestamoDevolucion prestamoDevolucion = new PrestamoDevolucion();
-                prestamoDevolucion.setIdPrestamo(rs.getInt("IDPrestamo"));
-                prestamoDevolucion.setFechaPrestamo(rs.getDate("FechaPrestamo"));
-                prestamoDevolucion.setFechaDevolucion(rs.getDate("FechaDevolucion"));
-                prestamoDevolucion.setCantidad(rs.getInt("Cantidad"));
-                prestamoDevolucion.setEstado(rs.getString("Estado"));
-                prestamoDevolucion.setObservacion(rs.getString("Observacion"));
-                prestamoDevolucion.setLibro(rs.getString("NombreLibro"));
-                prestamoDevolucion.setEstudiante(rs.getString("NombreEstudiante") + " " + rs.getString("ApellidoEstudiante"));
-
-                listPrestamos.add(prestamoDevolucion);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (rs != null) rs.close();
-                if (psm != null) psm.close();
-                if (cn != null) cn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return listPrestamos; // Devuelve la lista de préstamos
-    }
 }

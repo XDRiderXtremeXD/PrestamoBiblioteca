@@ -63,15 +63,19 @@
 						</button>
 					</div>
 
-					<!-- Barra de búsqueda -->
+					<!-- Barra de búsqueda con formulario -->
 					<div
 						class="col-12 col-md-6 d-flex justify-content-center justify-content-md-end align-items-center">
-						<label for="customSearch" class="visually-hidden">Buscar
-							préstamo</label> <input type="text" id="customSearch"
-							class="form-control me-2 w-100 w-md-auto" placeholder="Buscar..."
-							style="max-width: 200px;" value="<%=filtroRecording==null?"":filtroRecording%>">
-						<button onclick="searchPrestamo()" class="btn btn-primary"
-							aria-label="Iniciar búsqueda">Buscar</button>
+						<form action="PrestamoDevolucionServlet" method="get"
+							class="d-flex">
+							<input type="hidden" name="type" value="list"> <label
+								for="customSearch" class="visually-hidden">Buscar
+								préstamo</label> <input type="text" id="customSearch" name="filtro"
+								class="form-control me-2 w-100 w-md-auto"
+								style="max-width: 200px;" placeholder="Buscar..."
+								value="<%=filtroRecording == null ? "" : filtroRecording%>">
+							<button type="submit" class="btn btn-primary">Buscar</button>
+						</form>
 					</div>
 				</section>
 
@@ -192,8 +196,8 @@
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="addLoanBook" class="form-label">Libro</label> <select
-									class="form-control" id="addLoanBook" name="addLoanBook"  data-live-search="true"
-									title="Seleccione un libro" required>
+									class="form-control" id="addLoanBook" name="addLoanBook"
+									data-live-search="true" title="Seleccione un libro" required>
 									<%
 									if (listLibro != null) {
 										for (Libro item : listLibro) {
@@ -207,9 +211,9 @@
 							</div>
 							<div class="col-md-6 mb-3">
 								<label for="addLoanStudent" class="form-label">Estudiante</label>
-								<select class="form-control" id="addLoanStudent" name="addLoanStudent"
-									data-live-search="true" title="Seleccione un estudiante"
-									required>
+								<select class="form-control" id="addLoanStudent"
+									name="addLoanStudent" data-live-search="true"
+									title="Seleccione un estudiante" required>
 									<%
 									if (listLibro != null) {
 										for (Estudiante item : listEstudiantes) {

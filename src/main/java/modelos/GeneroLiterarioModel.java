@@ -46,4 +46,37 @@ public class GeneroLiterarioModel implements GeneroLiterarioInterface {
 	    
 	    return listGeneroLiterario;
 	}
+
+	@Override
+	public String getNombreGenero(int id) {
+	    String nombreGenero = null;
+
+	    Connection cn = null;
+	    PreparedStatement psm = null;
+	    ResultSet rs = null;
+
+	    try {
+	        cn = MySqlConexion.getConexion();
+	        String sql = "SELECT NombreGenero FROM GeneroLiterario WHERE IDGeneroLiterario = ?";
+	        psm = cn.prepareStatement(sql);
+	        psm.setInt(1, id);
+	        rs = psm.executeQuery();
+
+	        if (rs.next()) {
+	            nombreGenero = rs.getString("NombreGenero");
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    } finally {
+	        try {
+	            if (rs != null) rs.close();
+	            if (psm != null) psm.close();
+	            if (cn != null) cn.close();
+	        } catch (Exception e2) {
+	            e2.printStackTrace();
+	        }
+	    }
+
+	    return nombreGenero;
+	}
 }

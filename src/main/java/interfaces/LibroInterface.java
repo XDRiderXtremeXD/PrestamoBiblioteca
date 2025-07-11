@@ -8,6 +8,6 @@ public interface LibroInterface {
 	public int createLibro(Libro subject);
 	public int updateLibro(Libro subject);
 	public int deleteLibro(int id);
-	public List<Libro> listLibro();
+	public List<Libro> listLibro(String filtro);
 	public Libro getLibro(int id);
 }
