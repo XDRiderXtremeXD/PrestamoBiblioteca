@@ -27,6 +27,7 @@
 	List<PrestamoDevolucion> listPrestamosDevoluciones = (List<PrestamoDevolucion>) request.getAttribute("data");
 	List<Libro> listLibro = (List<Libro>) request.getAttribute("libros");
 	List<Estudiante> listEstudiantes = (List<Estudiante>) request.getAttribute("estudiantes");
+	String filtroRecording = request.getParameter("filtro");
 	%>
 	<!-- Header -->
 	<jsp:include page="WEB-INF/includes/header.jsp"></jsp:include>
@@ -68,8 +69,9 @@
 						<label for="customSearch" class="visually-hidden">Buscar
 							préstamo</label> <input type="text" id="customSearch"
 							class="form-control me-2 w-100 w-md-auto" placeholder="Buscar..."
-							style="max-width: 200px;">
-						<button class="btn btn-primary" aria-label="Iniciar búsqueda">Buscar</button>
+							style="max-width: 200px;" value="<%=filtroRecording==null?"":filtroRecording%>">
+						<button onclick="searchPrestamo()" class="btn btn-primary"
+							aria-label="Iniciar búsqueda">Buscar</button>
 					</div>
 				</section>
 
@@ -136,7 +138,8 @@
 											title="Cambiar Estado" data-bs-toggle="modal"
 											data-bs-target="#confirmStatusChangeModal"
 											aria-label="Cambiar estado del préstamo"
-											data-id="<%=item.getIdPrestamo()%>">
+											data-id="<%=item.getIdPrestamo()%>"
+											data-estado="<%=item.getEstado()%>">
 											<i class="bi bi-arrow-repeat"></i>
 										</button>
 
@@ -182,12 +185,14 @@
 						aria-label="Close"></button>
 				</header>
 				<div class="modal-body">
-					<form action="" method="post" id="addLoanForm">
+					<form action="PrestamoDevolucionServlet" method="post"
+						id="addLoanForm">
+						<input type="hidden" name="type" value="create">
 						<!-- Fila para Libro y Estudiante -->
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="addLoanBook" class="form-label">Libro</label> <select
-									class="form-control" id="addLoanBook" data-live-search="true"
+									class="form-control" id="addLoanBook" name="addLoanBook"  data-live-search="true"
 									title="Seleccione un libro" required>
 									<%
 									if (listLibro != null) {
@@ -202,7 +207,7 @@
 							</div>
 							<div class="col-md-6 mb-3">
 								<label for="addLoanStudent" class="form-label">Estudiante</label>
-								<select class="form-control" id="addLoanStudent"
+								<select class="form-control" id="addLoanStudent" name="addLoanStudent"
 									data-live-search="true" title="Seleccione un estudiante"
 									required>
 									<%
@@ -249,18 +254,20 @@
 									placeholder="Ingrese cualquier observación opcional"></textarea>
 							</div>
 						</div>
+
+						<br>
+						<div class="d-flex justify-content-center gap-3">
+							<!-- Botón de cancelar -->
+							<button type="button" class="btn btn-outline-secondary"
+								data-bs-dismiss="modal">Cancelar</button>
+
+							<!-- Botón de enviar -->
+							<input type="submit" class="btn btn-primary" value="Enviar Datos">
+						</div>
+
 					</form>
 
 				</div>
-				<footer class="modal-footer">
-					<button type="button"
-						class="btn btn-outline-secondary static-style"
-						data-bs-dismiss="modal">Cancelar</button>
-					<button type="submit" class="btn btn-success showSweetAlert"
-						data-bs-dismiss="modal"
-						data-text="Préstamo agregado correctamente." data-icon="success"
-						form="addLoanForm">Prestar</button>
-				</footer>
 			</div>
 		</div>
 	</div>
@@ -333,7 +340,7 @@
 	<!-- Modal de Confirmación de Cambio de Estado -->
 	<div class="modal fade" id="confirmStatusChangeModal" tabindex="-1"
 		aria-labelledby="confirmStatusChangeModalLabel" aria-hidden="true">
-		<div class="modal-dialog ">
+		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title text-body-emphasis"
@@ -343,18 +350,20 @@
 				</div>
 				<div class="modal-body">
 					<p>
-						¿Estás seguro de cambiar el estado a <strong class="text-success">'Devuelto'</strong>
-						de este libro?
+						¿Estás seguro de cambiar el estado a <strong class="text-success"
+							id="estadoPrestamo"> 'Devuelto' </strong> de este libro?
 					</p>
 					<p>
 						<strong>Este cambio no se puede deshacer.</strong>
 					</p>
 				</div>
 				<div class="modal-footer">
+					<input type="hidden" id="idPrestamo" name="idPrestamo" value="0">
 					<button type="button"
 						class="btn btn-outline-secondary static-style"
 						data-bs-dismiss="modal">Cancelar</button>
-					<button type="button" class="btn btn-success" id="confirmReturn">Confirmar</button>
+					<button onclick="cambiarEstado()" type="button"
+						class="btn btn-success" id="confirmReturn">Confirmar</button>
 				</div>
 			</div>
 		</div>
@@ -372,12 +381,16 @@
 						aria-label="Close"></button>
 				</header>
 				<div class="modal-body">
-					<form action="" method="post" id="editLoanForm">
+					<form action="PrestamoDevolucionServlet" method="post"
+						id="editLoanForm">
+						<input type="hidden" name="type" value="update"> <input
+							type="hidden" name="idEstudiante" value=1>
+
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="editLoanBook" class="form-label">Libro</label> <select
 									class="form-control" id="editLoanBook" data-live-search="true"
-									title="Seleccione un libro" required>
+									title="Seleccione un libro" name="selLibro" required>
 									<%
 									if (listLibro != null) {
 										for (Libro item : listLibro) {
@@ -393,12 +406,12 @@
 								<label for="editLoanStudent" class="form-label">Estudiante</label>
 								<select class="form-control" id="editLoanStudent"
 									data-live-search="true" title="Seleccione un estudiante"
-									name="selValuePicker" required>
+									name="selEstudiante" required>
 									<%
-									if (listLibro != null) {
+									if (listEstudiantes != null) {
 										for (Estudiante item : listEstudiantes) {
 									%>
-									<option value=<%=item.getIdEstudiante()%>><%=item.getNombres() + " " + item.getApellidos()%></option>
+									<option value="<%=item.getIdEstudiante()%>"><%=item.getNombres() + " " + item.getApellidos()%></option>
 									<%
 									}
 									}
@@ -406,6 +419,7 @@
 								</select>
 							</div>
 						</div>
+
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="editLoanDate" class="form-label">Fecha de
@@ -419,6 +433,7 @@
 									required>
 							</div>
 						</div>
+
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="editLoanQuantity" class="form-label">Cantidad</label>
@@ -431,17 +446,18 @@
 									name="loanObservation" rows="3">Ninguna</textarea>
 							</div>
 						</div>
+						<br>
+						<div class="d-flex justify-content-center gap-3">
+							<!-- Botón de cancelar -->
+							<button type="button" class="btn btn-outline-secondary"
+								data-bs-dismiss="modal">Cancelar</button>
+
+							<!-- Botón de enviar -->
+							<input type="submit" class="btn btn-primary" value="Enviar Datos">
+						</div>
 					</form>
+
 				</div>
-				<footer class="modal-footer">
-					<button type="button"
-						class="btn btn-outline-secondary static-style"
-						data-bs-dismiss="modal">Cancelar</button>
-					<button type="submit" class="btn btn-success showSweetAlert"
-						data-bs-dismiss="modal"
-						data-text="Préstamo editado correctamente." data-icon="success"
-						form="editLoanForm">Guardar</button>
-				</footer>
 			</div>
 		</div>
 	</div>
@@ -467,11 +483,14 @@
 	<script src="js/alert.js"></script>
 	<script src="js/datatables-setup.js"></script>
 	<script src="js/prestamoDevolucionModals.js"></script>
+	<script src="js/prestamoDevolucionBotonesAccion.js"></script>
 
 	<!-- Script para DataTable -->
 	<script>
 		setupDataTable('#tablaPyD');
 	</script>
+
+
 
 </body>
 </html>

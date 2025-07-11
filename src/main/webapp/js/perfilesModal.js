@@ -53,8 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
             Array.from(document.getElementById('profileRole').options).forEach(option => {
 				option.selected = option.text === rol;
 			});
-            
-            
         });
     });
 });

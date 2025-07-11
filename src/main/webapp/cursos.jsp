@@ -95,7 +95,6 @@
 								<td><%=item.getEstado()%></td>
 								<td class="align-middle text-center">
 									<div class="d-inline-flex gap-2">
-										>
 										<!-- Botón para ver detalles del curso -->
 										<button class="btn btn-sm btn-outline-secondary"
 											title="Ver más" data-bs-toggle="modal"

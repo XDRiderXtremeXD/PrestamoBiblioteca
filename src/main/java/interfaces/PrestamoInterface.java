@@ -5,9 +5,9 @@ import java.util.List;
 import entidades.PrestamoDevolucion;
 
 public interface PrestamoInterface {
-    public int createPrestamo(PrestamoDevolucion prestamo);
-    public int updatePrestamo(PrestamoDevolucion prestamo);
     public List<PrestamoDevolucion> listPrestamo();
     public PrestamoDevolucion getPrestamo(int id);
-    public void changeState(int idPrestamo, String nuevoEstado);
+    public int changeState(int idPrestamo, String nuevoEstado);
+    public int updatePrestamo(PrestamoDevolucion prestamoDevolucion,int idLibro,int idEstudiante) ;
+	int createPrestamo(PrestamoDevolucion prestamoDevolucion, int idLibro, int idEstudiante);
 }
