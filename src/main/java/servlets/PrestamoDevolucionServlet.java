@@ -37,9 +37,6 @@ public class PrestamoDevolucionServlet extends HttpServlet {
 		case "list":
 			listPrestamosDevoluciones(request, response);
 			break;
-		case "listFilter":
-			listPrestamosDevolucionesFilter(request, response);
-			break;
 		case "view":
 			getPrestamoDevolucion(request, response);
 			break;
@@ -56,30 +53,6 @@ public class PrestamoDevolucionServlet extends HttpServlet {
 			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Acción no válida");
 			break;
 		}
-	}
-
-	private void listPrestamosDevolucionesFilter(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		String filtro = request.getParameter("filtro");
-		
-		System.out.println(filtro);
-		PrestamoDevolucionModel model = new PrestamoDevolucionModel();
-		List<PrestamoDevolucion> data =filtro==null? model.listPrestamo():model.listPrestamoFilter(filtro); // Llamada al modelo para obtener la lista de
-																// prestamos/devoluciones
-
-		LibroModel model2 = new LibroModel();
-		List<Libro> libros = model2.listLibro(); // Llamada al modelo para obtener la lista de prestamos/devoluciones
-
-		EstudianteModel model3 = new EstudianteModel();
-		List<Estudiante> estudiantes = model3.listEstudiante(); // Llamada al modelo para obtener la lista de
-																// prestamos/devoluciones
-
-		// Establecer la lista de prestamosDevoluciones como atributo de la solicitud
-		request.setAttribute("data", data);
-		request.setAttribute("libros", libros);
-		request.setAttribute("estudiantes", estudiantes);
-		request.setAttribute("filtro", filtro);
-		request.getRequestDispatcher("pyd.jsp").forward(request, response);
 	}
 
 	private void changeState(HttpServletRequest request, HttpServletResponse response)
@@ -118,12 +91,14 @@ public class PrestamoDevolucionServlet extends HttpServlet {
 	// Método para listar todos los prestamos y devoluciones
 	private void listPrestamosDevoluciones(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
+		String filtro = request.getParameter("filtro");
+		System.out.println(filtro);
 		PrestamoDevolucionModel model = new PrestamoDevolucionModel();
-		List<PrestamoDevolucion> data = model.listPrestamo(); // Llamada al modelo para obtener la lista de
-																// prestamos/devoluciones
+		List<PrestamoDevolucion> data = model.listPrestamo(filtro==null?"":filtro);		
 
 		LibroModel model2 = new LibroModel();
-		List<Libro> libros = model2.listLibro(); // Llamada al modelo para obtener la lista de prestamos/devoluciones
+		List<Libro> libros = model2.listLibro(""); // Llamada al modelo para obtener la lista de prestamos/devoluciones
 
 		EstudianteModel model3 = new EstudianteModel();
 		List<Estudiante> estudiantes = model3.listEstudiante(); // Llamada al modelo para obtener la lista de
@@ -168,10 +143,10 @@ public class PrestamoDevolucionServlet extends HttpServlet {
 	    // Llamar al modelo para crear el prestamoDevolucion
 	    PrestamoDevolucionModel model = new PrestamoDevolucionModel();
 	    model.createPrestamo(prestamoDevolucion,Integer.parseInt(idLibro),Integer.parseInt(idEstudiante));
-		List<PrestamoDevolucion> data = model.listPrestamo(); // Llamada al modelo para obtener la lista de
+		List<PrestamoDevolucion> data = model.listPrestamo(""); // Llamada al modelo para obtener la lista de
 																// prestamos/devoluciones
 		LibroModel model2 = new LibroModel();
-		List<Libro> libros = model2.listLibro(); // Llamada al modelo para obtener la lista de prestamos/devoluciones
+		List<Libro> libros = model2.listLibro(""); // Llamada al modelo para obtener la lista de prestamos/devoluciones
 
 		EstudianteModel model3 = new EstudianteModel();
 		List<Estudiante> estudiantes = model3.listEstudiante(); // Llamada al modelo para obtener la lista de
@@ -218,10 +193,10 @@ public class PrestamoDevolucionServlet extends HttpServlet {
 		// Llamar al modelo para actualizar el prestamoDevolucion
 		PrestamoDevolucionModel model = new PrestamoDevolucionModel();
 		model.updatePrestamo(prestamoDevolucion,Integer.parseInt(libroId),Integer.parseInt(estudianteId));
-		List<PrestamoDevolucion> data = model.listPrestamo(); // Llamada al modelo para obtener la lista de
+		List<PrestamoDevolucion> data = model.listPrestamo(""); // Llamada al modelo para obtener la lista de
 																// prestamos/devoluciones
 		LibroModel model2 = new LibroModel();
-		List<Libro> libros = model2.listLibro(); // Llamada al modelo para obtener la lista de prestamos/devoluciones
+		List<Libro> libros = model2.listLibro(""); // Llamada al modelo para obtener la lista de prestamos/devoluciones
 
 		EstudianteModel model3 = new EstudianteModel();
 		List<Estudiante> estudiantes = model3.listEstudiante(); // Llamada al modelo para obtener la lista de

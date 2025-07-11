@@ -70,13 +70,21 @@
 					<!-- Barra de búsqueda -->
 					<div
 						class="col-12 col-md-6 d-flex justify-content-center justify-content-md-end align-items-center">
-						<label for="customSearch" class="visually-hidden">Buscar
-							libro</label> <input type="text" id="customSearch"
-							value="<%=filtroRecording == null ? "" : filtroRecording%>"
-							class="form-control me-2 w-100 w-md-auto" placeholder="Buscar..."
-							style="max-width: 200px;">
-						<button class="btn btn-primary" aria-label="Iniciar búsqueda">Buscar</button>
+						<form action="LibroServlet" method="get"
+							class="d-flex">
+							<input type="hidden" name="type" value="list"> <label
+								for="customSearch" class="visually-hidden">Buscar libro</label>
+
+							<input type="text" id="customSearch" name="filtro"
+								class="form-control me-2 w-100 w-md-auto"
+								style="max-width: 200px;" placeholder="Buscar..."
+								value="<%=filtroRecording == null ? "" : filtroRecording%>">
+
+							<button type="submit" class="btn btn-primary"
+								aria-label="Iniciar búsqueda">Buscar</button>
+						</form>
 					</div>
+
 				</section>
 
 				<!-- Tabla de Libros -->
@@ -91,7 +99,6 @@
 								<th scope="col">Autor</th>
 								<th scope="col">Editorial</th>
 								<th scope="col">Curso</th>
-								<th scope="col">Estado</th>
 								<th scope="col" class="text-center">Acciones</th>
 							</tr>
 						</thead>
@@ -108,7 +115,6 @@
 								<td><%=item.getAutor()%></td>
 								<td><%=item.getEditorial()%></td>
 								<td><%=item.getCurso()%></td>
-								<td><%=item.getEstado()%></td>
 								<td class="align-middle text-center">
 									<div class="d-inline-flex gap-2">
 										<!-- Botón para ver detalles del libro -->
@@ -174,6 +180,7 @@
 				<div class="modal-body">
 					<form action="LibroServlet" method="post" id="addBookForm">
 						<input type="hidden" name="type" value="create">
+
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="addBookTitle" class="form-label">Título</label> <input
@@ -188,11 +195,12 @@
 									placeholder="Ingrese la cantidad de ejemplares" required>
 							</div>
 						</div>
+
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="addAuthor" class="form-label">Autor</label> <select
-									class="form-control" id="addAuthor" data-live-search="true" name="selAutor"
-									title="Seleccione un autor" required>
+									class="form-control" id="addAuthor" name="selAutor"
+									data-live-search="true" required>
 									<%
 									if (listAutor != null) {
 										for (Autor item : listAutor) {
@@ -204,11 +212,11 @@
 									%>
 								</select>
 							</div>
+
 							<div class="col-md-6 mb-3">
 								<label for="addBookEditorial" class="form-label">Editorial</label>
-								<select class="form-control" id="addBookEditorial" name="selEditorial"
-									data-live-search="true" title="Seleccione una editorial"
-									required>
+								<select class="form-control" id="addBookEditorial"
+									name="selEditorial" data-live-search="true" required>
 									<%
 									if (listEditorial != null) {
 										for (Editorial item : listEditorial) {
@@ -221,17 +229,18 @@
 								</select>
 							</div>
 						</div>
+
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="addReleaseDate" class="form-label">Fecha de
 									lanzamiento</label> <input type="date" class="form-control"
-									id="addReleaseDate" name="addReleaseDate" required>
+									id="addReleaseDate" name="addBookReleaseDate" required>
 							</div>
+
 							<div class="col-md-6 mb-3">
 								<label for="addLiteraryGenre" class="form-label">Género
 									Literario</label> <select class="form-control" id="addLiteraryGenre"
-									data-live-search="true" title="Seleccione un género literario" name="selGenero"
-									required>
+									name="selGenero" data-live-search="true" required>
 									<%
 									if (listGeneroLiterario != null) {
 										for (GeneroLiterario item : listGeneroLiterario) {
@@ -244,12 +253,12 @@
 								</select>
 							</div>
 						</div>
+
 						<div class="row">
 							<div class="col-md-6 mb-3">
-								<label for="addCurso" class="form-label">Curso</label> 
-								<select class="form-control" id="addCurso"
-									data-live-search="true" title="Seleccione Curso" name="selCurso"
-									required>
+								<label for="addCurso" class="form-label">Curso</label> <select
+									class="form-control" id="addCurso" name="selCurso"
+									data-live-search="true" required>
 									<%
 									if (listCursos != null) {
 										for (Curso item : listCursos) {
@@ -260,28 +269,20 @@
 									}
 									%>
 								</select>
-							</div>	
-							<div class="col-md-6 mb-3">
-								<label for="addBookState" class="form-label">Estado</label> <select
-									class=" form-control" id="addBookState" name="addBookState"
-									required>
-									<option value="" selected disabled>Seleccione un
-										estado</option>
-									<option value="Activo">Activo</option>
-									<option value="No Activo">Inactivo</option>
-								</select>
 							</div>
+
+							<input type="hidden" name="SelEstado" value="Activo">
+
 						</div>
+
 						<br>
 						<div class="d-flex justify-content-center gap-3">
-							<!-- Botón de cancelar -->
 							<button type="button" class="btn btn-outline-secondary"
 								data-bs-dismiss="modal">Cancelar</button>
-
-							<!-- Botón de enviar -->
 							<input type="submit" class="btn btn-primary" value="Enviar Datos">
 						</div>
 					</form>
+
 				</div>
 			</div>
 		</div>
@@ -312,11 +313,11 @@
 					<div class="row">
 						<div class="col-md-6 mb-3">
 							<h6 class="fw-bold">Ejemplares Disponibles</h6>
-							<p id="viewBookCopiesTotal">50</p>
+							<p id="viewBookAvailableCopies">50</p>
 						</div>
 						<div class="col-md-6 mb-3">
 							<h6 class="fw-bold">Ejemplares Prestados</h6>
-							<p id="viewBookCopiesAvailable">40</p>
+							<p id="viewBookBorrowedCopies">40</p>
 						</div>
 					</div>
 					<div class="row">
@@ -346,7 +347,7 @@
 						</div>
 						<div class="col-md-6 mb-3">
 							<h6 class="fw-bold">Estado</h6>
-							<p id="viewBookCourse" class="text-success">Activo</p>
+							<p id="viewBookState" class="text-success">Activo</p>
 						</div>
 					</div>
 				</div>
@@ -372,7 +373,9 @@
 				</header>
 				<div class="modal-body">
 					<form action="LibroServlet" method="post" id="edirBookForm">
-						<input type="hidden" name="type" value="update">
+						<input type="hidden" name="type" value="update"> <input
+							type="hidden" name="editBookId" id="editBookId" value="">
+
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="editBookTitle" class="form-label">Título</label> <input
@@ -390,8 +393,8 @@
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="editAuthor" class="form-label">Autor</label> <select
-									class="form-control" id="editAuthor" data-live-search="true" name="selAutor"
-									title="Seleccione un autor" required>
+									class="form-control" id="editAuthor" data-live-search="true"
+									name="selAutor" title="Seleccione un autor" required>
 									<%
 									if (listAutor != null) {
 										for (Autor item : listAutor) {
@@ -405,9 +408,9 @@
 							</div>
 							<div class="col-md-6 mb-3">
 								<label for="editBookEditorial" class="form-label">Editorial</label>
-								<select class="form-control" id="editBookEditorial" name="selEditorial"
-									data-live-search="true" title="Seleccione una editorial"
-									required>
+								<select class="form-control" id="editBookEditorial"
+									name="selEditorial" data-live-search="true"
+									title="Seleccione una editorial" required>
 									<%
 									if (listEditorial != null) {
 										for (Editorial item : listEditorial) {
@@ -430,8 +433,8 @@
 							<div class="col-md-6 mb-3">
 								<label for="editLiteraryGenre" class="form-label">Género
 									Literario</label> <select class="form-control" id="editLiteraryGenre"
-									data-live-search="true" title="Seleccione un género literario" name="selGenero"
-									required>
+									data-live-search="true" title="Seleccione un género literario"
+									name="selGenero" required>
 									<%
 									if (listGeneroLiterario != null) {
 										for (GeneroLiterario item : listGeneroLiterario) {
@@ -446,10 +449,10 @@
 						</div>
 						<div class="row">
 							<div class="col-md-6 mb-3">
-								<label for="editCurso" class="form-label">Curso</label> 
-								<select class="form-control" id="editBookCourse"
-									data-live-search="true" title="Seleccione Curso" name="selCurso"
-									required>
+								<label for="editCurso" class="form-label">Curso</label> <select
+									class="form-control" id="editBookCourse"
+									data-live-search="true" title="Seleccione Curso"
+									name="selCurso" required>
 									<%
 									if (listCursos != null) {
 										for (Curso item : listCursos) {
@@ -460,14 +463,14 @@
 									}
 									%>
 								</select>
-							</div>	
-							
+							</div>
+
 							<div class="col-md-6 mb-3">
 								<label for="editBookState" class="form-label">Estado</label> <select
-									class=" form-control" id="editBookState"
-									name="Seleccione un estado" required>
-									<option value="Activo" selected>Activo</option>
-									<option value="No Activo">Inactivo</option>
+									class=" form-control" id="editBookState" name="SelEstado"
+									required>
+									<option value="activo" selected>Activo</option>
+									<option value="inactivo">Inactivo</option>
 								</select>
 							</div>
 						</div>
