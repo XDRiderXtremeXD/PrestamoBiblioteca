@@ -1,3 +1,4 @@
+<%@page import="entidades.Curso"%>
 <%@page import="entidades.Editorial"%>
 <%@page import="entidades.GeneroLiterario"%>
 <%@page import="entidades.Autor"%>
@@ -29,6 +30,8 @@
 	List<Autor> listAutor = (List<Autor>) request.getAttribute("autores");
 	List<GeneroLiterario> listGeneroLiterario = (List<GeneroLiterario>) request.getAttribute("generos");
 	List<Editorial> listEditorial = (List<Editorial>) request.getAttribute("editoriales");
+	List<Curso> listCursos = (List<Curso>) request.getAttribute("cursos");
+	String filtroRecording = request.getParameter("filtro");
 	%>
 	<!-- Header -->
 	<jsp:include page="WEB-INF/includes/header.jsp"></jsp:include>
@@ -69,6 +72,7 @@
 						class="col-12 col-md-6 d-flex justify-content-center justify-content-md-end align-items-center">
 						<label for="customSearch" class="visually-hidden">Buscar
 							libro</label> <input type="text" id="customSearch"
+							value="<%=filtroRecording == null ? "" : filtroRecording%>"
 							class="form-control me-2 w-100 w-md-auto" placeholder="Buscar..."
 							style="max-width: 200px;">
 						<button class="btn btn-primary" aria-label="Iniciar búsqueda">Buscar</button>
@@ -168,7 +172,8 @@
 						aria-label="Close"></button>
 				</header>
 				<div class="modal-body">
-					<form action="" method="post" id="addBookForm">
+					<form action="LibroServlet" method="post" id="addBookForm">
+						<input type="hidden" name="type" value="create">
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="addBookTitle" class="form-label">Título</label> <input
@@ -186,7 +191,7 @@
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="addAuthor" class="form-label">Autor</label> <select
-									class="form-control" id="addAuthor" data-live-search="true"
+									class="form-control" id="addAuthor" data-live-search="true" name="selAutor"
 									title="Seleccione un autor" required>
 									<%
 									if (listAutor != null) {
@@ -201,7 +206,7 @@
 							</div>
 							<div class="col-md-6 mb-3">
 								<label for="addBookEditorial" class="form-label">Editorial</label>
-								<select class="form-control" id="addBookEditorial"
+								<select class="form-control" id="addBookEditorial" name="selEditorial"
 									data-live-search="true" title="Seleccione una editorial"
 									required>
 									<%
@@ -225,7 +230,7 @@
 							<div class="col-md-6 mb-3">
 								<label for="addLiteraryGenre" class="form-label">Género
 									Literario</label> <select class="form-control" id="addLiteraryGenre"
-									data-live-search="true" title="Seleccione un género literario"
+									data-live-search="true" title="Seleccione un género literario" name="selGenero"
 									required>
 									<%
 									if (listGeneroLiterario != null) {
@@ -241,14 +246,21 @@
 						</div>
 						<div class="row">
 							<div class="col-md-6 mb-3">
-								<label for="addBookCourse" class="form-label">Curso</label> <select
-									class=" form-control" id="addBookCourse"
-									data-live-search="true" title="Seleccione un curso" required>
-									<option value="Literatura">Literatura</option>
-									<option value="Ciencias">Ciencias</option>
-									<option value="Historia">Historia</option>
+								<label for="addCurso" class="form-label">Curso</label> 
+								<select class="form-control" id="addCurso"
+									data-live-search="true" title="Seleccione Curso" name="selCurso"
+									required>
+									<%
+									if (listCursos != null) {
+										for (Curso item : listCursos) {
+									%>
+									<option value="<%=item.getIdCurso()%>"><%=item.getNombre()%></option>
+									<%
+									}
+									}
+									%>
 								</select>
-							</div>
+							</div>	
 							<div class="col-md-6 mb-3">
 								<label for="addBookState" class="form-label">Estado</label> <select
 									class=" form-control" id="addBookState" name="addBookState"
@@ -260,16 +272,17 @@
 								</select>
 							</div>
 						</div>
+						<br>
+						<div class="d-flex justify-content-center gap-3">
+							<!-- Botón de cancelar -->
+							<button type="button" class="btn btn-outline-secondary"
+								data-bs-dismiss="modal">Cancelar</button>
+
+							<!-- Botón de enviar -->
+							<input type="submit" class="btn btn-primary" value="Enviar Datos">
+						</div>
 					</form>
 				</div>
-				<footer class="modal-footer">
-					<button type="button"
-						class="btn btn-outline-secondary static-style"
-						data-bs-dismiss="modal">Cancelar</button>
-					<button type="submit" class="btn btn-success showSweetAlert"
-						data-bs-dismiss="modal" data-text="Libro agregado correctamente."
-						data-icon="success" form="addBookForm">Agregar</button>
-				</footer>
 			</div>
 		</div>
 	</div>
@@ -352,13 +365,14 @@
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
 				<header class="modal-header">
-					<h5 class="modal-title text-body-emphasis" id="addBookModalLabel">Editar
+					<h5 class="modal-title text-body-emphasis" id="editBookModalLabel">Editar
 						Libro</h5>
 					<button type="button" class="btn-close" data-bs-dismiss="modal"
 						aria-label="Close"></button>
 				</header>
 				<div class="modal-body">
-					<form action="" method="post" id="addBookForm">
+					<form action="LibroServlet" method="post" id="edirBookForm">
+						<input type="hidden" name="type" value="update">
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="editBookTitle" class="form-label">Título</label> <input
@@ -376,7 +390,7 @@
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="editAuthor" class="form-label">Autor</label> <select
-									class="form-control" id="editAuthor" data-live-search="true"
+									class="form-control" id="editAuthor" data-live-search="true" name="selAutor"
 									title="Seleccione un autor" required>
 									<%
 									if (listAutor != null) {
@@ -391,7 +405,7 @@
 							</div>
 							<div class="col-md-6 mb-3">
 								<label for="editBookEditorial" class="form-label">Editorial</label>
-								<select class="form-control" id="editBookEditorial"
+								<select class="form-control" id="editBookEditorial" name="selEditorial"
 									data-live-search="true" title="Seleccione una editorial"
 									required>
 									<%
@@ -416,7 +430,7 @@
 							<div class="col-md-6 mb-3">
 								<label for="editLiteraryGenre" class="form-label">Género
 									Literario</label> <select class="form-control" id="editLiteraryGenre"
-									data-live-search="true" title="Seleccione un género literario"
+									data-live-search="true" title="Seleccione un género literario" name="selGenero"
 									required>
 									<%
 									if (listGeneroLiterario != null) {
@@ -432,14 +446,22 @@
 						</div>
 						<div class="row">
 							<div class="col-md-6 mb-3">
-								<label for="editBookCourse" class="form-label">Curso</label> <select
-									class=" form-control" id="editBookCourse"
-									data-live-search="true" name="Seleccione un curso" required>
-									<option value="Literatura">Literatura</option>
-									<option value="Ciencias" selected>Matematicas</option>
-									<option value="Historia">Historia</option>
+								<label for="editCurso" class="form-label">Curso</label> 
+								<select class="form-control" id="editBookCourse"
+									data-live-search="true" title="Seleccione Curso" name="selCurso"
+									required>
+									<%
+									if (listCursos != null) {
+										for (Curso item : listCursos) {
+									%>
+									<option value="<%=item.getIdCurso()%>"><%=item.getNombre()%></option>
+									<%
+									}
+									}
+									%>
 								</select>
-							</div>
+							</div>	
+							
 							<div class="col-md-6 mb-3">
 								<label for="editBookState" class="form-label">Estado</label> <select
 									class=" form-control" id="editBookState"
@@ -449,16 +471,17 @@
 								</select>
 							</div>
 						</div>
+						<br>
+						<div class="d-flex justify-content-center gap-3">
+							<!-- Botón de cancelar -->
+							<button type="button" class="btn btn-outline-secondary"
+								data-bs-dismiss="modal">Cancelar</button>
+
+							<!-- Botón de enviar -->
+							<input type="submit" class="btn btn-primary" value="Enviar Datos">
+						</div>
 					</form>
 				</div>
-				<footer class="modal-footer">
-					<button type="button"
-						class="btn btn-outline-secondary static-style"
-						data-bs-dismiss="modal">Cancelar</button>
-					<button type="submit" class="btn btn-success showSweetAlert"
-						data-bs-dismiss="modal" data-text="Libro editado correctamente."
-						data-icon="success" form="editBookForm">Guardar</button>
-				</footer>
 			</div>
 		</div>
 	</div>
@@ -483,7 +506,7 @@
 	<script src="js/color-modes.js"></script>
 	<script src="js/alert.js"></script>
 	<script src="js/datatables-setup.js"></script>
-<script src="js/librosModal.js"></script>
+	<script src="js/librosModal.js"></script>
 	<!-- Script para DataTable -->
 	<script>
 		setupDataTable('#tablaLibros');

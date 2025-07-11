@@ -37,6 +37,9 @@ public class PrestamoDevolucionServlet extends HttpServlet {
 		case "list":
 			listPrestamosDevoluciones(request, response);
 			break;
+		case "listFilter":
+			listPrestamosDevolucionesFilter(request, response);
+			break;
 		case "view":
 			getPrestamoDevolucion(request, response);
 			break;
@@ -55,28 +58,48 @@ public class PrestamoDevolucionServlet extends HttpServlet {
 		}
 	}
 
+	private void listPrestamosDevolucionesFilter(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		String filtro = request.getParameter("filtro");
+		
+		System.out.println(filtro);
+		PrestamoDevolucionModel model = new PrestamoDevolucionModel();
+		List<PrestamoDevolucion> data =filtro==null? model.listPrestamo():model.listPrestamoFilter(filtro); // Llamada al modelo para obtener la lista de
+																// prestamos/devoluciones
+
+		LibroModel model2 = new LibroModel();
+		List<Libro> libros = model2.listLibro(); // Llamada al modelo para obtener la lista de prestamos/devoluciones
+
+		EstudianteModel model3 = new EstudianteModel();
+		List<Estudiante> estudiantes = model3.listEstudiante(); // Llamada al modelo para obtener la lista de
+																// prestamos/devoluciones
+
+		// Establecer la lista de prestamosDevoluciones como atributo de la solicitud
+		request.setAttribute("data", data);
+		request.setAttribute("libros", libros);
+		request.setAttribute("estudiantes", estudiantes);
+		request.setAttribute("filtro", filtro);
+		request.getRequestDispatcher("pyd.jsp").forward(request, response);
+	}
+
 	private void changeState(HttpServletRequest request, HttpServletResponse response)
-	        throws ServletException, IOException {
-	    // Obtener los parámetros de la solicitud
-	    int idPrestamo = Integer.parseInt(request.getParameter("idPrestamo"));
-	    String nuevoEstado = request.getParameter("nuevoEstado");
+			throws ServletException, IOException {
 
-	    // Crear el objeto PrestamoDevolucion
-	    PrestamoDevolucion prestamoDevolucion = new PrestamoDevolucion();
-	    prestamoDevolucion.setIdPrestamo(idPrestamo);
-	    prestamoDevolucion.setEstado(nuevoEstado);
+		System.out.println("aca");
+		// Obtener los parámetros de la solicitud
+		int idPrestamo = Integer.parseInt(request.getParameter("idPrestamo"));
+		String nuevoEstado = request.getParameter("nuevoEstado");
 
-	    // Llamar al modelo para cambiar el estado del préstamo/devolución
-	    PrestamoDevolucionModel model = new PrestamoDevolucionModel();
-	    int resultado = model.updatePrestamo(prestamoDevolucion); // Usamos updatePrestamo para actualizar el estado
+		PrestamoDevolucionModel model = new PrestamoDevolucionModel();
+		int resultado = model.changeState(idPrestamo, nuevoEstado); // Usamos updatePrestamo para actualizar el estado
 
-	    if (resultado > 0) {
-	        // Si la actualización fue exitosa, redirigir al listado
-	        response.sendRedirect("PrestamoDevolucionServlet?type=list");
-	    } else {
-	        // En caso de error, redirigir o mostrar mensaje de error
-	        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error al cambiar el estado");
-	    }
+		if (resultado > 0) {
+			// Si la actualización fue exitosa, redirigir al listado
+			response.sendRedirect("PrestamoDevolucionServlet?type=list");
+		} else {
+			// En caso de error, redirigir o mostrar mensaje de error
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error al cambiar el estado");
+		}
 	}
 
 	// Método para obtener un prestamo/devolución por ID
@@ -115,62 +138,100 @@ public class PrestamoDevolucionServlet extends HttpServlet {
 
 	// Método para crear un nuevo prestamoDevolucion
 	private void createPrestamoDevolucion(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		// Recuperar los parámetros del formulario
-		String Libro = request.getParameter("idLibro");
-		String Estudiante = request.getParameter("idEstudiante");
-		String fechaPrestamo = request.getParameter("fechaPrestamo");
-		String fechaDevolucion = request.getParameter("fechaDevolucion");
-		int cantidad = Integer.parseInt(request.getParameter("cantidad"));
-		String estado = request.getParameter("estado");
-		String observacion = request.getParameter("observacion");
+	        throws ServletException, IOException {
+	    // Recuperar los parámetros del formulario
+	    String idLibro = request.getParameter("addLoanBook");
+	    String idEstudiante = request.getParameter("addLoanStudent");
+	    String fechaPrestamo = request.getParameter("addLoanDate");
+	    String fechaDevolucion = request.getParameter("addReturnDate");
+	    int cantidad = Integer.parseInt(request.getParameter("addLoanQuantity"));
+	    String estado = request.getParameter("state");
+	    String observacion = request.getParameter("addLoanObservation");
 
-		// Crear el objeto PrestamoDevolucion
-		PrestamoDevolucion prestamoDevolucion = new PrestamoDevolucion();
-		prestamoDevolucion.setLibro(Libro);
-		prestamoDevolucion.setEstudiante(Estudiante);
-		prestamoDevolucion.setFechaPrestamo(java.sql.Date.valueOf(fechaPrestamo));
-		prestamoDevolucion.setFechaDevolucion(java.sql.Date.valueOf(fechaDevolucion));
-		prestamoDevolucion.setCantidad(cantidad);
-		prestamoDevolucion.setEstado(estado);
-		prestamoDevolucion.setObservacion(observacion);
+	 // Depuración de los valores recuperados
+	    System.out.println("idLibro: " + idLibro);
+	    System.out.println("idEstudiante: " + idEstudiante);
+	    System.out.println("fechaPrestamo: " + fechaPrestamo);
+	    System.out.println("fechaDevolucion: " + fechaDevolucion);
+	    System.out.println("cantidad: " + cantidad);
+	    System.out.println("estado: " + estado);
+	    System.out.println("observacion: " + observacion);
+	    
+	    // Crear el objeto PrestamoDevolucion
+	    PrestamoDevolucion prestamoDevolucion = new PrestamoDevolucion();
+	    prestamoDevolucion.setFechaPrestamo(java.sql.Date.valueOf(fechaPrestamo));
+	    prestamoDevolucion.setFechaDevolucion(java.sql.Date.valueOf(fechaDevolucion));
+	    prestamoDevolucion.setCantidad(cantidad);
+	    prestamoDevolucion.setEstado(estado);
+	    prestamoDevolucion.setObservacion(observacion);
 
-		// Llamar al modelo para crear el prestamoDevolucion
-		PrestamoDevolucionModel model = new PrestamoDevolucionModel();
-		model.createPrestamo(prestamoDevolucion);
+	    // Llamar al modelo para crear el prestamoDevolucion
+	    PrestamoDevolucionModel model = new PrestamoDevolucionModel();
+	    model.createPrestamo(prestamoDevolucion,Integer.parseInt(idLibro),Integer.parseInt(idEstudiante));
+		List<PrestamoDevolucion> data = model.listPrestamo(); // Llamada al modelo para obtener la lista de
+																// prestamos/devoluciones
+		LibroModel model2 = new LibroModel();
+		List<Libro> libros = model2.listLibro(); // Llamada al modelo para obtener la lista de prestamos/devoluciones
 
-		// Redirigir al listado de prestamos
-		// response.sendRedirect("PrestamoDevolucionServlet?type=list");
+		EstudianteModel model3 = new EstudianteModel();
+		List<Estudiante> estudiantes = model3.listEstudiante(); // Llamada al modelo para obtener la lista de
+																// prestamos/devoluciones
+		
+		// Redirigir al listado de prestamos o a donde se desee
+		request.setAttribute("data", data);
+		request.setAttribute("libros", libros);
+		request.setAttribute("estudiantes", estudiantes);
+		request.getRequestDispatcher("pyd.jsp").forward(request, response);
+	    
 	}
 
 	// Método para actualizar un prestamoDevolucion existente
 	private void updatePrestamoDevolucion(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		int id = Integer.parseInt(request.getParameter("id"));
-		String Libro = request.getParameter("idLibro");
-		String Estudiante = request.getParameter("idEstudiante");
-		String fechaPrestamo = request.getParameter("fechaPrestamo");
-		String fechaDevolucion = request.getParameter("fechaDevolucion");
-		int cantidad = Integer.parseInt(request.getParameter("cantidad"));
-		String estado = request.getParameter("estado");
-		String observacion = request.getParameter("observacion");
+
+		// Obtener los parámetros del formulario
+		int id = Integer.parseInt(request.getParameter("idEstudiante"));
+		String libroId = request.getParameter("selLibro"); // Se modificó a 'selLibro'
+		String estudianteId = request.getParameter("selEstudiante"); // Se modificó a 'selEstudiante'
+		String fechaPrestamo = request.getParameter("loanDate"); // Se modificó a 'loanDate'
+		String fechaDevolucion = request.getParameter("returnDate"); // Se modificó a 'returnDate'
+		int cantidad = Integer.parseInt(request.getParameter("loanQuantity")); // Se modificó a 'loanQuantity'
+		String observacion = request.getParameter("loanObservation"); // Se modificó a 'loanObservation'
 
 		// Crear el objeto PrestamoDevolucion
 		PrestamoDevolucion prestamoDevolucion = new PrestamoDevolucion();
 		prestamoDevolucion.setIdPrestamo(id);
-		prestamoDevolucion.setLibro(Libro);
-		prestamoDevolucion.setEstudiante(Estudiante);
 		prestamoDevolucion.setFechaPrestamo(java.sql.Date.valueOf(fechaPrestamo));
 		prestamoDevolucion.setFechaDevolucion(java.sql.Date.valueOf(fechaDevolucion));
 		prestamoDevolucion.setCantidad(cantidad);
-		prestamoDevolucion.setEstado(estado);
 		prestamoDevolucion.setObservacion(observacion);
 
+		 // Imprimir o procesar las variables según sea necesario
+        System.out.println("ID Estudiante: " + id);
+        System.out.println("ID Libro: " + libroId);
+        System.out.println("ID Estudiante: " + estudianteId);
+        System.out.println("Fecha de Préstamo: " + fechaPrestamo);
+        System.out.println("Fecha de Devolución: " + fechaDevolucion);
+        System.out.println("Cantidad: " + cantidad);
+        System.out.println("Observación: " + observacion);
+		    
 		// Llamar al modelo para actualizar el prestamoDevolucion
 		PrestamoDevolucionModel model = new PrestamoDevolucionModel();
-		model.updatePrestamo(prestamoDevolucion);
+		model.updatePrestamo(prestamoDevolucion,Integer.parseInt(libroId),Integer.parseInt(estudianteId));
+		List<PrestamoDevolucion> data = model.listPrestamo(); // Llamada al modelo para obtener la lista de
+																// prestamos/devoluciones
+		LibroModel model2 = new LibroModel();
+		List<Libro> libros = model2.listLibro(); // Llamada al modelo para obtener la lista de prestamos/devoluciones
 
-		// Redirigir al listado de prestamos
-		// response.sendRedirect("PrestamoDevolucionServlet?type=list");
+		EstudianteModel model3 = new EstudianteModel();
+		List<Estudiante> estudiantes = model3.listEstudiante(); // Llamada al modelo para obtener la lista de
+																// prestamos/devoluciones
+		
+		// Redirigir al listado de prestamos o a donde se desee
+		request.setAttribute("data", data);
+		request.setAttribute("libros", libros);
+		request.setAttribute("estudiantes", estudiantes);
+		request.getRequestDispatcher("pyd.jsp").forward(request, response);
 	}
+
 }

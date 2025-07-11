@@ -57,8 +57,6 @@ public class CursosServlet extends HttpServlet {
         // Establecer la lista de cursos como atributo para la vista JSP
         request.setAttribute("data", data);
         
-        System.out.println(data);
-        
         // Redirigir a la página de listado de cursos
         request.getRequestDispatcher("cursos.jsp").forward(request, response);
     }
