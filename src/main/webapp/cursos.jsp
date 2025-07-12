@@ -1,7 +1,15 @@
+<%@page import="entidades.Perfil"%>
 <%@page import="entidades.Curso"%>
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%
+	Perfil perfil = (Perfil) session.getAttribute("perfilLogueado");
+	if (perfil == null) {
+		response.sendRedirect("login.jsp");
+		return;
+	}
+%>
 <!DOCTYPE html>
 <html lang="es" data-bs-theme="auto">
 <head>
