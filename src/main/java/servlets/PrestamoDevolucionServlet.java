@@ -100,7 +100,7 @@ public class PrestamoDevolucionServlet extends HttpServlet {
 		List<Libro> libros = model2.listLibro(""); // Llamada al modelo para obtener la lista de prestamos/devoluciones
 
 		EstudianteModel model3 = new EstudianteModel();
-		List<Estudiante> estudiantes = model3.listEstudiante(); // Llamada al modelo para obtener la lista de
+		List<Estudiante> estudiantes = model3.listEstudiante(""); // Llamada al modelo para obtener la lista de
 																// prestamos/devoluciones
 
 		// Establecer la lista de prestamosDevoluciones como atributo de la solicitud
@@ -148,7 +148,7 @@ public class PrestamoDevolucionServlet extends HttpServlet {
 		List<Libro> libros = model2.listLibro(""); // Llamada al modelo para obtener la lista de prestamos/devoluciones
 
 		EstudianteModel model3 = new EstudianteModel();
-		List<Estudiante> estudiantes = model3.listEstudiante(); // Llamada al modelo para obtener la lista de
+		List<Estudiante> estudiantes = model3.listEstudiante(""); // Llamada al modelo para obtener la lista de
 																// prestamos/devoluciones
 		
 		// Redirigir al listado de prestamos o a donde se desee
@@ -198,7 +198,7 @@ public class PrestamoDevolucionServlet extends HttpServlet {
 		List<Libro> libros = model2.listLibro(""); // Llamada al modelo para obtener la lista de prestamos/devoluciones
 
 		EstudianteModel model3 = new EstudianteModel();
-		List<Estudiante> estudiantes = model3.listEstudiante(); // Llamada al modelo para obtener la lista de
+		List<Estudiante> estudiantes = model3.listEstudiante(""); // Llamada al modelo para obtener la lista de
 																// prestamos/devoluciones
 		
 		// Redirigir al listado de prestamos o a donde se desee

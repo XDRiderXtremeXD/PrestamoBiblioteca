@@ -105,12 +105,10 @@ public class AutorModel implements AutoresInterface {
             SELECT a.*, g.NombreGenero 
             FROM Autor a
             JOIN GeneroLiterario g ON a.IDGeneroLiterario = g.IDGeneroLiterario
-            WHERE (
+            WHERE 
                 a.Nombre LIKE ? 
                 OR a.Nacionalidad LIKE ? 
                 OR g.NombreGenero LIKE ?
-            )
-            AND a.Estado = 'activo'
         """;
 
         try (Connection cn = MySqlConexion.getConexion();
