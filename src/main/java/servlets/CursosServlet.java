@@ -5,59 +5,134 @@ import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.*;
 
 import entidades.Curso;
 import modelos.CursosModel;
 
-/**
- * Servlet implementation class CursoServlet
- */
 @WebServlet("/CursosServlet")
 public class CursosServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    /**
-     * @see HttpServlet#service(HttpServletRequest request, HttpServletResponse response)
-     */
-    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Obtener el tipo de acción a realizar
+    @Override
+    protected void service(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        request.setCharacterEncoding("UTF-8");
         String type = request.getParameter("type");
-        System.out.println("Esta es la acción enviada: " + type);
-        System.out.println("aca curso");
-        // Ejecutar la acción según el parámetro "type"
+        System.out.println("Acción recibida: " + type);
+
         switch (type) {
             case "list":
-                listCursos(request, response);  // Listar cursos
+                listCursos(request, response);
                 break;
             case "view":
-                getCurso(request, response);  // Ver detalles de un curso
+                getCurso(request, response);
+                break;
+            case "create":
+                createCurso(request, response);
+                break;
+            case "update":
+                updateCurso(request, response);
                 break;
             default:
-                request.setAttribute("mensaje", "Ocurrió un problema");
+                request.setAttribute("mensaje", "Acción no válida");
                 request.getRequestDispatcher("dashboard.jsp").forward(request, response);
         }
     }
 
-    // Método para ver los detalles de un curso
-    private void getCurso(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // TODO: Implementar la lógica para obtener un curso específico
+    private void listCursos(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        
+    	 String filtro = request.getParameter("filtro");
+         filtro = (filtro == null) ? "" : filtro;
+         System.out.println("Filtro curso: " + filtro);
+    	
+        CursosModel cursosModel = new CursosModel();
+        List<Curso> data = cursosModel.listCurso(filtro);
+
+        request.setAttribute("data", data);
+        request.getRequestDispatcher("cursos.jsp").forward(request, response);
     }
 
-    // Método para listar todos los cursos
-    private void listCursos(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Crear una instancia del modelo de Cursos
-        CursosModel cursosModel = new CursosModel();
-        
-        // Obtener la lista de cursos
-        List<Curso> data = cursosModel.listCurso();
+    private void getCurso(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-        // Establecer la lista de cursos como atributo para la vista JSP
-        request.setAttribute("data", data);
-        
-        // Redirigir a la página de listado de cursos
-        request.getRequestDispatcher("cursos.jsp").forward(request, response);
+        int id = Integer.parseInt(request.getParameter("id"));
+        CursosModel cursosModel = new CursosModel();
+        Curso curso = cursosModel.getCurso(id);
+
+        if (curso != null) {
+            request.setAttribute("curso", curso);
+            request.getRequestDispatcher("cursoDetalle.jsp").forward(request, response);
+        } else {
+            request.setAttribute("mensaje", "Curso no encontrado");
+            request.getRequestDispatcher("dashboard.jsp").forward(request, response);
+        }
+    }
+
+    private void createCurso(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        try {
+            String nombre = request.getParameter("addCursoNombre");
+            String nivel = request.getParameter("addCursoNivel");
+            String descripcion = request.getParameter("addCursoDescripcion");
+            String estado = request.getParameter("addCursoEstado");
+
+            Curso curso = new Curso();
+            curso.setNombre(nombre);
+            curso.setNivel(nivel);
+            curso.setDescripcion(descripcion);
+            curso.setEstado(estado);
+
+            CursosModel model = new CursosModel();
+            int result = model.createCurso(curso);
+
+            request.setAttribute("mensaje", result != 0 
+                ? "Curso creado exitosamente" 
+                : "Error al crear el curso");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("mensaje", "Error al procesar curso nuevo");
+        }
+
+        listCursos(request, response);
+    }
+
+    private void updateCurso(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        try {
+        	int id = Integer.parseInt(request.getParameter("editCursoId"));
+        	String nombre = request.getParameter("editCursoNombre");
+        	String nivel = request.getParameter("editCursoNivel");
+        	String descripcion = request.getParameter("editCursoDescripcion");
+        	String estado = request.getParameter("editCursoEstado");
+
+
+            Curso curso = new Curso();
+            curso.setIdCurso(id);
+            curso.setNombre(nombre);
+            curso.setNivel(nivel);
+            curso.setDescripcion(descripcion);
+            curso.setEstado(estado);
+            
+            System.out.println(estado);
+
+            CursosModel model = new CursosModel();
+            int result = model.updateCurso(curso);
+
+            request.setAttribute("mensaje", result != 0 
+                ? "Curso actualizado correctamente" 
+                : "No se pudo actualizar el curso");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            request.setAttribute("mensaje", "Error al actualizar el curso");
+        }
+
+        listCursos(request, response);
     }
 }

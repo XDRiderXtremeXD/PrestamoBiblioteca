@@ -11,85 +11,141 @@ import entidades.Curso;
 import interfaces.CursosInterface;
 import utils.MySqlConexion;
 
-public class CursosModel implements CursosInterface{
+public class CursosModel implements CursosInterface {
 
-	@Override
-	public int createCurso(Curso curso) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    @Override
+    public int createCurso(Curso curso) {
+        String sql = """
+            INSERT INTO Curso (Nombre, Nivel, Descripcion, Estado)
+            VALUES (?, ?, ?, ?)
+        """;
 
-	@Override
-	public int updateCurso(Curso curso) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+        try (Connection cn = MySqlConexion.getConexion();
+             PreparedStatement ps = cn.prepareStatement(sql)) {
 
-	@Override
-	public int deleteCurso(int id) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+            ps.setString(1, curso.getNombre());
+            ps.setString(2, curso.getNivel());
+            ps.setString(3, curso.getDescripcion());
+            ps.setString(4, curso.getEstado());
 
-	@Override
-	public List<Curso> listCurso() {
-		// TODO Auto-generated method stub
-		  List<Curso> listCursos = new ArrayList<Curso>();
+            return ps.executeUpdate();
 
-	        // Variables para la conexión y la consulta
-	        Connection cn = null;
-	        PreparedStatement psm = null;
-	        ResultSet rs = null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
 
-	        try {
-	            // Establecer la conexión con la base de datos
-	            cn = MySqlConexion.getConexion();
+    @Override
+    public int updateCurso(Curso curso) {
+        String sql = """
+            UPDATE Curso 
+            SET Nombre = ?, Nivel = ?, Descripcion = ?, Estado = ?
+            WHERE IDCurso = ?
+        """;
+        
+        try (Connection cn = MySqlConexion.getConexion();
+             PreparedStatement ps = cn.prepareStatement(sql)) {
+         
+            ps.setString(1, curso.getNombre());
+            ps.setString(2, curso.getNivel());
+            ps.setString(3, curso.getDescripcion());
+            ps.setString(4, curso.getEstado());
+            ps.setInt(5, curso.getIdCurso());
 
-	            // SQL para obtener los cursos
-	            String sql = "SELECT * FROM CURSO";
+            return ps.executeUpdate();
 
-	            // Preparar la sentencia SQL
-	            psm = cn.prepareStatement(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
 
-	            // Ejecutar la consulta
-	            rs = psm.executeQuery();
+    @Override
+    public int deleteCurso(int id) {
+        String sql = "DELETE FROM Curso WHERE IDCurso = ?";
 
-	            // Recorrer los resultados de la consulta
-	            while (rs.next()) {
-	                Curso curso = new Curso();
+        try (Connection cn = MySqlConexion.getConexion();
+             PreparedStatement ps = cn.prepareStatement(sql)) {
 
-	                // Asignar los resultados a los atributos del curso
-	                curso.setIdCurso(rs.getInt("IDCurso"));
-	                curso.setNombre(rs.getString("Nombre"));
-	                curso.setNivel(rs.getString("Nivel"));
-	                curso.setDescripcion(rs.getString("Descripcion"));
-	                curso.setEstado(rs.getString("Estado"));
+            ps.setInt(1, id);
+            return ps.executeUpdate();
 
-	                // Agregar el curso a la lista
-	                listCursos.add(curso);
-	            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
 
-	        } catch (Exception e) {
-	            // Manejo de excepciones
-	            e.printStackTrace();
-	        } finally {
-	            // Cerrar recursos para evitar fugas de memoria
-	            try {
-	                if (rs != null) rs.close();
-	                if (psm != null) psm.close();
-	                if (cn != null) cn.close();
-	            } catch (SQLException e2) {
-	                e2.printStackTrace();
-	            }
-	        }
+    @Override
+	public List<Curso> listCurso(String filtro) {
+        List<Curso> cursos = new ArrayList<>();
 
-	        return listCursos;  // Devolver la lista de cursos
-	}
+        String sql = """
+            SELECT * FROM Curso
+            WHERE 
+                Nombre LIKE ?
+                OR Nivel LIKE ?
+                OR Descripcion LIKE ?
+        """;
 
-	@Override
-	public Curso getCurso(int id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+        try (Connection cn = MySqlConexion.getConexion();
+             PreparedStatement ps = cn.prepareStatement(sql)) {
 
+            String filtroLike = filtro + "%";
+
+            ps.setString(1, filtroLike);
+            ps.setString(2, filtroLike);
+            ps.setString(3, filtroLike);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Curso curso = new Curso();
+
+                    curso.setIdCurso(rs.getInt("IDCurso"));
+                    curso.setNombre(rs.getString("Nombre"));
+                    curso.setNivel(rs.getString("Nivel"));
+                    curso.setDescripcion(rs.getString("Descripcion"));
+                    curso.setEstado(rs.getString("Estado"));
+
+                    cursos.add(curso);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return cursos;
+    }
+
+    @Override
+    public Curso getCurso(int id) {
+        String sql = "SELECT * FROM Curso WHERE IDCurso = ?";
+
+        try (Connection cn = MySqlConexion.getConexion();
+             PreparedStatement ps = cn.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Curso curso = new Curso();
+
+                    curso.setIdCurso(rs.getInt("IDCurso"));
+                    curso.setNombre(rs.getString("Nombre"));
+                    curso.setNivel(rs.getString("Nivel"));
+                    curso.setDescripcion(rs.getString("Descripcion"));
+                    curso.setEstado(rs.getString("Estado"));
+
+                    return curso;
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 }
