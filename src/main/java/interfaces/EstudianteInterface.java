@@ -5,10 +5,10 @@ import java.util.List;
 import entidades.Estudiante;
 
 public interface EstudianteInterface {
-		public int createLibro(Estudiante estudiante);
-		public int updateLibro(Estudiante estudiante);
-		public int deleteLibro(int id);
-		public List<Estudiante> listEstudiante();
-		public Estudiante getLibro(int id);
+		public int createEstudiante(Estudiante estudiante);
+		public int updateEstudiante(Estudiante estudiante);
+		public int deleteEstudiante(int id);
+		public List<Estudiante> listEstudiante(String filtro);
+		public Estudiante getEstudiante(int id);
 
 }

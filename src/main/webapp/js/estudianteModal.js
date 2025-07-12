@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
             let genero = this.getAttribute('data-genero');
             let facultad = this.getAttribute('data-facultad');
             let estado = this.getAttribute('data-estado');
-
+           
             // Asignar los valores al formulario de edición
             document.getElementById('editStudentDNI').value = dni;
             document.getElementById('editStudentFirstName').value = nombres;
@@ -54,6 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('editStudentPhone').value = telefono;
             document.getElementById('editStudentEmail').value = correoElectronico;
             document.getElementById('editStudentBirthDate').value = fechaNacimiento;
+            document.getElementById('editStudentId').value=idEstudiante;
             
        
          Array.from(document.getElementById('editFaculty').options).forEach(option => {

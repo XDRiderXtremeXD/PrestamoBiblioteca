@@ -25,6 +25,7 @@
 	<%
 	List<Estudiante> listEstudiante = (List<Estudiante>) request.getAttribute("data");
 	List<Facultad> listFacultad = (List<Facultad>) request.getAttribute("facultades");
+	String filtroRecording = request.getParameter("filtro");
 	%>
 	<!-- Header -->
 	<jsp:include page="WEB-INF/includes/header.jsp"></jsp:include>
@@ -63,11 +64,19 @@
 					<!-- Barra de búsqueda -->
 					<div
 						class="col-12 col-md-6 d-flex justify-content-center justify-content-md-end align-items-center">
-						<label for="customSearch" class="visually-hidden">Buscar
-							estudiante</label> <input type="text" id="customSearch"
-							class="form-control me-2 w-100 w-md-auto" placeholder="Buscar..."
-							style="max-width: 200px;">
-						<button class="btn btn-primary" aria-label="Iniciar búsqueda">Buscar</button>
+						<form action="EstudianteServlet" method="get"
+							class="d-flex">
+							<input type="hidden" name="type" value="list"> <label
+								for="customSearch" class="visually-hidden">Buscar Estudiante</label>
+
+							<input type="text" id="customSearch" name="filtro"
+								class="form-control me-2 w-100 w-md-auto"
+								style="max-width: 200px;" placeholder="Buscar..."
+								value="<%=filtroRecording == null ? "" : filtroRecording%>">
+
+							<button type="submit" class="btn btn-primary"
+								aria-label="Iniciar búsqueda">Buscar</button>
+						</form>
 					</div>
 				</section>
 
@@ -107,7 +116,6 @@
 								<td><%=item.getEstado()%></td>
 								<td class="align-middle text-center">
 									<div class="d-inline-flex gap-2">
-										>
 										<!-- Botón para ver detalles del estudiante -->
 										<button class="btn btn-sm btn-outline-secondary view-student"
 											title="Ver más" data-bs-toggle="modal"
@@ -169,8 +177,11 @@
 					<button type="button" class="btn-close" data-bs-dismiss="modal"
 						aria-label="Close"></button>
 				</header>
+
 				<div class="modal-body">
-					<form action="" method="post" id="addStudentForm">
+					<form action="EstudianteServlet" method="post" id="addStudentForm">
+						<input type="hidden" name="type" value="create">
+
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="addStudentDni" class="form-label">DNI</label> <input
@@ -185,6 +196,7 @@
 									placeholder="Ingrese los nombres del estudiante" required>
 							</div>
 						</div>
+
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="addStudentLastName" class="form-label">Apellidos</label>
@@ -199,6 +211,7 @@
 									placeholder="Ingrese la dirección del estudiante" required>
 							</div>
 						</div>
+
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="addStudentPhone" class="form-label">Teléfono</label>
@@ -213,6 +226,7 @@
 									placeholder="ejemplo@correo.com" required>
 							</div>
 						</div>
+
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="addStudentBirthDate" class="form-label">Fecha
@@ -221,18 +235,20 @@
 							</div>
 							<div class="col-md-6 mb-3">
 								<label for="addStudentGender" class="form-label">Género</label>
-								<select class=" form-control" id="addStudentGender"
-									title="Seleccione un género" required>
+								<select class="form-control" id="addStudentGender"
+									name="addStudentGender" required>
+									<option value="">Seleccione un género</option>
 									<option value="Masculino">Masculino</option>
 									<option value="Femenino">Femenino</option>
 								</select>
 							</div>
 						</div>
+
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="addFaculty" class="form-label">Facultad</label> <select
-									class="form-control" id="addFaculty" data-live-search="true"
-									title="Seleccione una facultad" required>
+									class="form-control" id="addFaculty" name="addFaculty" required>
+									<option value="">Seleccione una facultad</option>
 									<%
 									if (listFacultad != null) {
 										for (Facultad item : listFacultad) {
@@ -244,29 +260,24 @@
 									%>
 								</select>
 							</div>
-							<div class="col-md-6 mb-3">
-								<label for="addStudentState" class="form-label">Estado</label> <select
-									class=" form-control" id="addStudentState"
-									title="Seleccione un estado" required>
-									<option value="Activo">Activo</option>
-									<option value="No Activo">Inactivo</option>
-								</select>
-							</div>
+							
+							<input type="hidden" name="addStudentState" value="activo">
+						</div>
+
+						<br>
+						<div class="d-flex justify-content-center gap-3">
+							<button type="button" class="btn btn-outline-secondary"
+								data-bs-dismiss="modal">Cancelar</button>
+							<input type="submit" class="btn btn-primary"
+								value="Agregar Estudiante">
 						</div>
 					</form>
 				</div>
-				<footer class="modal-footer">
-					<button type="button"
-						class="btn btn-outline-secondary static-style"
-						data-bs-dismiss="modal">Cancelar</button>
-					<button type="submit" class="btn btn-success showSweetAlert"
-						data-bs-dismiss="modal"
-						data-text="Estudiante agregado correctamente." data-icon="success"
-						form="addStudentForm">Agregar</button>
-				</footer>
+
 			</div>
 		</div>
 	</div>
+
 
 	<!-- Modal de Ver Más -->
 	<div class="modal fade" id="viewStudentModal" tabindex="-1"
@@ -357,68 +368,72 @@
 					<button type="button" class="btn-close" data-bs-dismiss="modal"
 						aria-label="Close"></button>
 				</header>
+
 				<div class="modal-body">
-					<form action="" method="post" id="editStudentForm">
+					<form action="EstudianteServlet" method="post" id="editStudentForm">
+						<input type="hidden" name="type" value="update"> <input
+							type="hidden" name="editId" id="editStudentId" value="0">
+
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="editStudentDNI" class="form-label">DNI</label> <input
 									type="text" class="form-control" id="editStudentDNI"
-									name="editStudentDNI" value="12345678" required>
+									name="editStudentDNI" required>
 							</div>
 							<div class="col-md-6 mb-3">
 								<label for="editStudentFirstName" class="form-label">Nombres</label>
 								<input type="text" class="form-control"
-									id="editStudentFirstName" name="editStudentFirstName"
-									value="Juan" required>
+									id="editStudentFirstName" name="editStudentFirstName" required>
 							</div>
 						</div>
+
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="editStudentLastName" class="form-label">Apellidos</label>
 								<input type="text" class="form-control" id="editStudentLastName"
-									name="editStudentLastName" value="Pérez Gómez" required>
+									name="editStudentLastName" required>
 							</div>
 							<div class="col-md-6 mb-3">
 								<label for="editStudentAddress" class="form-label">Dirección</label>
 								<input type="text" class="form-control" id="editStudentAddress"
-									name="editStudentAddress" value="Calle Falsa 123, Ciudad"
-									required>
+									name="editStudentAddress" required>
 							</div>
 						</div>
+
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="editStudentPhone" class="form-label">Teléfono</label>
 								<input type="text" class="form-control" id="editStudentPhone"
-									name="editStudentPhone" value="987654321" required>
+									name="editStudentPhone" required>
 							</div>
 							<div class="col-md-6 mb-3">
 								<label for="editStudentEmail" class="form-label">Correo
 									Electrónico</label> <input type="email" class="form-control"
-									id="editStudentEmail" name="editStudentEmail"
-									value="juan.perez@mail.com" required>
+									id="editStudentEmail" name="editStudentEmail" required>
 							</div>
 						</div>
+
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="editStudentBirthDate" class="form-label">Fecha
 									de Nacimiento</label> <input type="date" class="form-control"
-									id="editStudentBirthDate" name="editStudentBirthDate"
-									value="1998-04-15" required>
+									id="editStudentBirthDate" name="editStudentBirthDate" required>
 							</div>
 							<div class="col-md-6 mb-3">
 								<label for="editstudentGender" class="form-label">Género</label>
-								<select class=" form-control" id="editstudentGender"
+								<select class="form-control" id="editstudentGender"
 									name="editstudentGender" required>
-									<option value="Masculino" selected>Masculino</option>
+									<option value="Masculino">Masculino</option>
 									<option value="Femenino">Femenino</option>
 								</select>
 							</div>
 						</div>
+
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="editFaculty" class="form-label">Facultad</label> <select
-									class="form-control" id="editFaculty" data-live-search="true"
-									title="Seleccione una facultad" required>
+									class="form-control" id="editFaculty" name="editFaculty"
+									required>
 									<%
 									if (listFacultad != null) {
 										for (Facultad item : listFacultad) {
@@ -432,27 +447,28 @@
 							</div>
 							<div class="col-md-6 mb-3">
 								<label for="editStudentState" class="form-label">Estado</label>
-								<select class=" form-control" id="editStudentState"
+								<select class="form-control" id="editStudentState"
 									name="editStudentState" required>
-									<option value="Activo" selected>Activo</option>
-									<option value="No Activo">Inactivo</option>
+									<option value="activo">Activo</option>
+									<option value="inactivo">Inactivo</option>
 								</select>
 							</div>
 						</div>
+
+						<br>
+						<div class="d-flex justify-content-center gap-3">
+							<button type="button" class="btn btn-outline-secondary"
+								data-bs-dismiss="modal">Cancelar</button>
+							<input type="submit" class="btn btn-primary"
+								value="Guardar Cambios">
+						</div>
 					</form>
 				</div>
-				<footer class="modal-footer">
-					<button type="button"
-						class="btn btn-outline-secondary static-style"
-						data-bs-dismiss="modal">Cancelar</button>
-					<button type="submit" class="btn btn-success showSweetAlert"
-						data-bs-dismiss="modal"
-						data-text="Estudiante editado correctamente." data-icon="success"
-						form="editStudentForm">Guardar</button>
-				</footer>
+
 			</div>
 		</div>
 	</div>
+
 
 	<!-- Modal de Eliminar -->
 	<div class="modal fade" id="deleteStudentModal" tabindex="-1"
@@ -500,7 +516,7 @@
 	<!-- Scripts personalizados (que se cargan después de las bibliotecas) -->
 	<script src="js/alert.js"></script>
 	<script src="js/datatables-setup.js"></script>
-<script src="js/estudianteModal.js"></script>
+	<script src="js/estudianteModal.js"></script>
 	<!-- Script para DataTable -->
 	<script>
 		setupDataTable('#tablaEstudiantes');
