@@ -92,7 +92,7 @@ public class LibroServlet extends HttpServlet {
 		List<Editorial> editoriales = editorialModel.listEditorial("");
 
 		CursosModel cursosModel = new CursosModel();
-		List<Curso> cursos = cursosModel.listCurso();
+		List<Curso> cursos = cursosModel.listCurso("");
 
 		request.setAttribute("data", data);
 		request.setAttribute("autores", autores);

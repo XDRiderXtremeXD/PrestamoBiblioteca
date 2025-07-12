@@ -8,6 +8,6 @@ public interface CursosInterface {
     public int createCurso(Curso curso);
     public int updateCurso(Curso curso);
     public int deleteCurso(int id);
-    public List<Curso> listCurso();
+    public List<Curso> listCurso(String filtro) ;
     public Curso getCurso(int id);
 }

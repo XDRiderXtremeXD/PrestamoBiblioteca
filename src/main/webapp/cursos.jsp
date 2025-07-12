@@ -23,6 +23,7 @@
 <body>
 	<%
 	List<Curso> listCursos = (List<Curso>) request.getAttribute("data");
+	String filtroRecording = request.getParameter("filtro");
 	%>
 	<!-- Header -->
 	<jsp:include page="WEB-INF/includes/header.jsp"></jsp:include>
@@ -61,11 +62,19 @@
 					<!-- Barra de búsqueda -->
 					<div
 						class="col-12 col-md-6 d-flex justify-content-center justify-content-md-end align-items-center">
-						<label for="customSearch" class="visually-hidden">Buscar
-							curso</label> <input type="text" id="customSearch"
-							class="form-control me-2 w-100 w-md-auto" placeholder="Buscar..."
-							style="max-width: 200px;">
-						<button class="btn btn-primary" aria-label="Iniciar búsqueda">Buscar</button>
+						<form action="CursosServlet" method="get"
+							class="d-flex">
+							<input type="hidden" name="type" value="list"> <label
+								for="customSearch" class="visually-hidden">Buscar Curso</label>
+
+							<input type="text" id="customSearch" name="filtro"
+								class="form-control me-2 w-100 w-md-auto"
+								style="max-width: 200px;" placeholder="Buscar..."
+								value="<%=filtroRecording == null ? "" : filtroRecording%>">
+
+							<button type="submit" class="btn btn-primary"
+								aria-label="Iniciar búsqueda">Buscar</button>
+						</form>
 					</div>
 				</section>
 
@@ -143,18 +152,18 @@
 						aria-label="Close"></button>
 				</header>
 				<div class="modal-body">
-					<form action="" method="post" id="addCourseForm">
+					<form action="CursosServlet" method="post" id="addCourseForm">
+						<input type="hidden" name="type" value="create">
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="addCourseName" class="form-label">Nombre</label> <input
 									type="text" class="form-control" id="addCourseName"
-									name="addCourseName" placeholder="Ingrese el nombre del curso"
-									required>
+									name="addCursoNombre" required>
 							</div>
 							<div class="col-md-6 mb-3">
 								<label for="addCourseLevel" class="form-label">Nivel</label> <select
-									class=" form-control" id="addCourseLevel"
-									title="Seleccione un nivel" required>
+									class="form-control" id="addCourseLevel" name="addCursoNivel"
+									required>
 									<option value="Básico">Básico</option>
 									<option value="Intermedio">Intermedio</option>
 									<option value="Avanzado">Avanzado</option>
@@ -162,34 +171,25 @@
 							</div>
 						</div>
 						<div class="row">
+							<input type="hidden" name="addCursoEstado" value="activo">
 							<div class="col-md-6 mb-3">
-								<label for="addCourseState" class="form-label">Estado</label> <select
-									class=" form-control" id="addCourseState"
-									title="Seleccione un estado" required>
-									<option value="Activo">Activo</option>
-									<option value="No Activo">Inactivo</option>
-								</select>
+								<label for="addCourseDescription" class="form-label">Descripción</label>
+								<textarea class="form-control" id="addCourseDescription"
+									name="addCursoDescripcion" rows="4" required></textarea>
 							</div>
-							<div class="col-md-6 mb-3">
-								<label for="editCourseDescription" class="form-label">Descripción</label>
-								<textarea class="form-control" id="editCourseDescription"
-									name="editCourseDescription" rows="4"
-									placeholder="Ingrese una breve descripción" required></textarea>
-							</div>
+						</div>
+						<br>
+						<div class="d-flex justify-content-center gap-3">
+							<button type="button" class="btn btn-outline-secondary"
+								data-bs-dismiss="modal">Cancelar</button>
+							<input type="submit" class="btn btn-success" value="Crear Curso">
 						</div>
 					</form>
 				</div>
-				<footer class="modal-footer">
-					<button type="button"
-						class="btn btn-outline-secondary static-style"
-						data-bs-dismiss="modal">Cancelar</button>
-					<button type="submit" class="btn btn-success showSweetAlert"
-						data-bs-dismiss="modal" data-text="Curso agregado correctamente."
-						data-icon="success" form="addCourseForm">Agregar</button>
-				</footer>
 			</div>
 		</div>
 	</div>
+
 
 	<!-- Modal de Ver Más -->
 	<div class="modal fade" id="viewCourseModal" tabindex="-1"
@@ -253,19 +253,21 @@
 						aria-label="Close"></button>
 				</header>
 				<div class="modal-body">
-					<form action="" method="post" id="editCourseForm">
+					<form action="CursosServlet" method="post" id="editCourseForm">
+						<input type="hidden" name="type" value="update"> <input
+							type="hidden" name="editCursoId" id="editCursoId" value="0">
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="editCourseName" class="form-label">Nombre</label> <input
 									type="text" class="form-control" id="editCourseName"
-									name="editCourseName" value="Matemáticas Básicas" required>
+									name="editCursoNombre" required>
 							</div>
 							<div class="col-md-6 mb-3">
 								<label for="editCourseLevel" class="form-label">Nivel</label> <select
-									class=" form-control" id="editCourseLevel"
-									name="editCourseLevel" required>
+									class="form-control" id="editCourseLevel" name="editCursoNivel"
+									required>
 									<option value="Básico">Básico</option>
-									<option value="Intermedio" selected>Intermedio</option>
+									<option value="Intermedio">Intermedio</option>
 									<option value="Avanzado">Avanzado</option>
 								</select>
 							</div>
@@ -273,28 +275,26 @@
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="editCourseState" class="form-label">Estado</label> <select
-									class=" form-control" id="editCourseState"
-									name="editCourseState" required>
-									<option value="Activo" selected>Activo</option>
-									<option value="No Activo">Inactivo</option>
+									class="form-control" id="editCourseState"
+									name="editCursoEstado" required>
+									<option value="activo">Activo</option>
+									<option value="inactivo">Inactivo</option>
 								</select>
 							</div>
 							<div class="col-md-6 mb-3">
 								<label for="editCourseDescription" class="form-label">Descripción</label>
 								<textarea class="form-control" id="editCourseDescription"
-									name="editCourseDescription" rows="4" required>Este curso cubre los principios básicos de las matemáticas, ideal para estudiantes de secundaria o principios de universidad.</textarea>
+									name="editCursoDescripcion" rows="4" required></textarea>
 							</div>
+						</div>
+						<br>
+						<div class="d-flex justify-content-center gap-3">
+							<button type="button" class="btn btn-outline-secondary"
+								data-bs-dismiss="modal">Cancelar</button>
+							<input type="submit" class="btn btn-success" value="Editar Curso">
 						</div>
 					</form>
 				</div>
-				<footer class="modal-footer">
-					<button type="button"
-						class="btn btn-outline-secondary static-style"
-						data-bs-dismiss="modal">Cancelar</button>
-					<button type="submit" class="btn btn-success showSweetAlert"
-						data-bs-dismiss="modal" data-text="Curso editado correctamente."
-						data-icon="success" form="editCourseForm">Guardar</button>
-				</footer>
 			</div>
 		</div>
 	</div>
