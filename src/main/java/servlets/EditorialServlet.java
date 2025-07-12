@@ -23,8 +23,8 @@ public class EditorialServlet extends HttpServlet {
 
 		// Asegurar correcta codificación para tildes
 		request.setCharacterEncoding("UTF-8");
-
 		String type = request.getParameter("type");
+		System.out.println("Acción recibida: " + type);
 
 		switch (type) {
 		case "list":

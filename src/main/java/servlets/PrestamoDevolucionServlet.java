@@ -29,8 +29,10 @@ public class PrestamoDevolucionServlet extends HttpServlet {
 	 */
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String type = request.getParameter("type");
-		System.out.println("Acción recibida: " + type);
+		
+		request.setCharacterEncoding("UTF-8");
+        String type = request.getParameter("type");
+        System.out.println("Acción recibida: " + type);
 
 		// Selección de la acción basada en el parámetro 'type'
 		switch (type) {

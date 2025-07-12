@@ -11,89 +11,156 @@ import entidades.Perfil;
 import interfaces.PerfilesInterface;
 import utils.MySqlConexion;
 
-public class PerfilesModel implements PerfilesInterface{
+public class PerfilesModel implements PerfilesInterface {
 
-	@Override
-	public int createPerfil(Perfil perfil) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    @Override
+    public int createPerfil(Perfil perfil) {
+        String sql = """
+            INSERT INTO Perfil 
+            (Usuario, CorreoElectronico, Nombres, Apellidos, Contrasena, Rol, FotoPerfil, Estado) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """;
 
-	@Override
-	public int updatePerfil(Perfil perfil) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+        try (Connection cn = MySqlConexion.getConexion();
+             PreparedStatement ps = cn.prepareStatement(sql)) {
 
-	@Override
-	public int deletePerfil(int id) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+            ps.setString(1, perfil.getUsuario());
+            ps.setString(2, perfil.getCorreoElectronico());
+            ps.setString(3, perfil.getNombres());
+            ps.setString(4, perfil.getApellidos());
+            ps.setString(5, perfil.getContrasena());
+            ps.setString(6, perfil.getRol());
+            ps.setString(7, perfil.getFotoPerfil()); // Si fuera byte[] sería setBytes()
+            ps.setString(8, perfil.getEstado());
 
-	@Override
-	public List<Perfil> listPerfil() {
-		// TODO Auto-generated method stub
-		 List<Perfil> listPerfil = new ArrayList<Perfil>();
+            return ps.executeUpdate();
 
-	        // Variables para la conexión y la consulta
-	        Connection cn = null;
-	        PreparedStatement psm = null;
-	        ResultSet rs = null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
 
-	        try {
-	            // Establecer la conexión con la base de datos
-	            cn = MySqlConexion.getConexion();
+    @Override
+    public int updatePerfil(Perfil perfil) {
+        String sql = """
+            UPDATE Perfil 
+            SET Usuario = ?, CorreoElectronico = ?, Nombres = ?, Apellidos = ?, 
+                Contrasena = ?, Rol = ?, FotoPerfil = ?, Estado = ?
+            WHERE IDPerfil = ?
+        """;
 
-	            // SQL para obtener la información de los perfiles
-	            String sql = "SELECT idPerfil, usuario, correoElectronico, nombres, apellidos, contrasena, rol, fotoPerfil, estado FROM Perfil";
+        try (Connection cn = MySqlConexion.getConexion();
+             PreparedStatement ps = cn.prepareStatement(sql)) {
 
-	            // Preparar la sentencia SQL
-	            psm = cn.prepareStatement(sql);
+            ps.setString(1, perfil.getUsuario());
+            ps.setString(2, perfil.getCorreoElectronico());
+            ps.setString(3, perfil.getNombres());
+            ps.setString(4, perfil.getApellidos());
+            ps.setString(5, perfil.getContrasena());
+            ps.setString(6, perfil.getRol());
+            ps.setString(7, perfil.getFotoPerfil()); // Si es LONGBLOB y byte[], usa setBytes()
+            ps.setString(8, perfil.getEstado());
+            ps.setInt(9, perfil.getIdPerfil());
 
-	            // Ejecutar la consulta
-	            rs = psm.executeQuery();
+            return ps.executeUpdate();
 
-	            // Recorrer los resultados de la consulta
-	            while (rs.next()) {
-	                Perfil perfil = new Perfil();
-	                
-	                // Asignar los resultados a los atributos del perfil
-	                perfil.setIdPerfil(rs.getInt("idPerfil"));
-	                perfil.setUsuario(rs.getString("usuario"));
-	                perfil.setCorreoElectronico(rs.getString("correoElectronico"));
-	                perfil.setNombres(rs.getString("nombres"));
-	                perfil.setApellidos(rs.getString("apellidos"));
-	                perfil.setContrasena(rs.getString("contrasena"));
-	                perfil.setRol(rs.getString("rol"));
-	                perfil.setFotoPerfil(rs.getString("fotoPerfil"));
-	                perfil.setEstado(rs.getString("estado"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
 
-	                // Agregar el perfil a la lista
-	                listPerfil.add(perfil);
-	            }
+    @Override
+    public int deletePerfil(int id) {
+        String sql = "DELETE FROM Perfil WHERE IDPerfil = ?";
 
-	        } catch (Exception e) {
-	            // Manejo de excepciones
-	            e.printStackTrace();
-	        } finally {
-	            // Cerrar recursos para evitar fugas de memoria
-	            try {
-	                if (rs != null) rs.close();
-	                if (psm != null) psm.close();
-	                if (cn != null) cn.close();
-	            } catch (SQLException e2) {
-	                e2.printStackTrace();
-	            }
-	        }
+        try (Connection cn = MySqlConexion.getConexion();
+             PreparedStatement ps = cn.prepareStatement(sql)) {
 
-	        return listPerfil;  // Devolver la l
-	}
+            ps.setInt(1, id);
+            return ps.executeUpdate();
 
-	@Override
-	public Perfil getPerfil(int id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
 
+    @Override
+    public List<Perfil> listPerfil(String filtro) {
+        List<Perfil> perfiles = new ArrayList<>();
+
+        String sql = """
+            SELECT * FROM Perfil
+            WHERE usuario LIKE ? 
+               OR correoElectronico LIKE ?
+               OR nombres LIKE ?
+               OR apellidos LIKE ?
+               OR rol LIKE ?
+        """;
+
+        try (Connection cn = MySqlConexion.getConexion();
+             PreparedStatement ps = cn.prepareStatement(sql)) {
+
+            String filtroLike = filtro + "%";
+            for (int i = 1; i <= 5; i++) {
+                ps.setString(i, filtroLike);
+            }
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Perfil perfil = new Perfil();
+                    perfil.setIdPerfil(rs.getInt("IDPerfil"));
+                    perfil.setUsuario(rs.getString("Usuario"));
+                    perfil.setCorreoElectronico(rs.getString("CorreoElectronico"));
+                    perfil.setNombres(rs.getString("Nombres"));
+                    perfil.setApellidos(rs.getString("Apellidos"));
+                    perfil.setContrasena(rs.getString("Contrasena"));
+                    perfil.setRol(rs.getString("Rol"));
+                    perfil.setFotoPerfil(rs.getString("FotoPerfil")); // usa rs.getBytes si es byte[]
+                    perfil.setEstado(rs.getString("Estado"));
+                    perfiles.add(perfil);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return perfiles;
+    }
+
+    @Override
+    public Perfil getPerfil(int id) {
+        String sql = "SELECT * FROM Perfil WHERE IDPerfil = ?";
+
+        try (Connection cn = MySqlConexion.getConexion();
+             PreparedStatement ps = cn.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Perfil perfil = new Perfil();
+                    perfil.setIdPerfil(rs.getInt("IDPerfil"));
+                    perfil.setUsuario(rs.getString("Usuario"));
+                    perfil.setCorreoElectronico(rs.getString("CorreoElectronico"));
+                    perfil.setNombres(rs.getString("Nombres"));
+                    perfil.setApellidos(rs.getString("Apellidos"));
+                    perfil.setContrasena(rs.getString("Contrasena"));
+                    perfil.setRol(rs.getString("Rol"));
+                    perfil.setFotoPerfil(rs.getString("FotoPerfil"));
+                    perfil.setEstado(rs.getString("Estado"));
+                    return perfil;
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 }
+

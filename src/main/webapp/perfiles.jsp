@@ -23,6 +23,7 @@
 <body>
 	<%
 	List<Perfil> listPerfil = (List<Perfil>) request.getAttribute("data");
+	String filtroRecording = request.getParameter("filtro");
 	%>
 	<!-- Header -->
 	<jsp:include page="WEB-INF/includes/header.jsp"></jsp:include>
@@ -60,11 +61,19 @@
 					<!-- Barra de búsqueda -->
 					<div
 						class="col-12 col-md-6 d-flex justify-content-center justify-content-md-end align-items-center">
-						<label for="customSearch" class="visually-hidden">Buscar
-							perfil</label> <input type="text" id="customSearch"
-							class="form-control me-2 w-100 w-md-auto" placeholder="Buscar..."
-							style="max-width: 200px;">
-						<button class="btn btn-primary" aria-label="Iniciar búsqueda">Buscar</button>
+						<form action="PerfilServlet" method="get"
+							class="d-flex">
+							<input type="hidden" name="type" value="list"> <label
+								for="customSearch" class="visually-hidden">Buscar Perfil</label>
+
+							<input type="text" id="customSearch" name="filtro"
+								class="form-control me-2 w-100 w-md-auto"
+								style="max-width: 200px;" placeholder="Buscar..."
+								value="<%=filtroRecording == null ? "" : filtroRecording%>">
+
+							<button type="submit" class="btn btn-primary"
+								aria-label="Iniciar búsqueda">Buscar</button>
+						</form>
 					</div>
 				</section>
 
@@ -151,7 +160,7 @@
 		</section>
 	</main>
 
-	<!-- Modal de Agregar -->
+	<!-- Modal de Agregar Perfil -->
 	<div class="modal fade" id="addProfileModal" tabindex="-1"
 		aria-labelledby="addProfileModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-lg">
@@ -163,7 +172,10 @@
 						aria-label="Close"></button>
 				</header>
 				<div class="modal-body">
-					<form action="" method="post" id="registerProfileForm">
+					<form action="PerfilServlet" method="post" id="registerProfileForm"
+						enctype="multipart/form-data">
+						<input type="hidden" name="type" value="create">
+
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="addProfileUsername" class="form-label">Usuario</label>
@@ -178,6 +190,7 @@
 									placeholder="ejemplo@correo.com" required>
 							</div>
 						</div>
+
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="addProfileFirstName" class="form-label">Nombres</label>
@@ -192,36 +205,28 @@
 									required>
 							</div>
 						</div>
+
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="addProfilePassword" class="form-label">Contraseña</label>
-								<div class="input-group">
-									<input type="password" class="form-control password-field"
-										data-toggle-id="1" name="addProfilePassword"
-										placeholder="Ingrese su contraseña"> <span
-										class="input-group-text" data-toggle-id="1"
-										style="cursor: pointer;"> <i class="bi bi-eye-slash"></i>
-									</span>
-								</div>
+								<input type="password" class="form-control"
+									id="addProfilePassword" name="addProfilePassword"
+									placeholder="Ingrese su contraseña" required>
 							</div>
 							<div class="col-md-6 mb-3">
 								<label for="addProfileConfirmPassword" class="form-label">Confirmar
-									Contraseña</label>
-								<div class="input-group">
-									<input type="password" class="form-control password-field"
-										data-toggle-id="2" name="addProfileConfirmPassword"
-										placeholder="Confirme su contraseña"> <span
-										class="input-group-text" data-toggle-id="2"
-										style="cursor: pointer;"> <i class="bi bi-eye-slash"></i>
-									</span>
-								</div>
+									Contraseña</label> <input type="password" class="form-control"
+									id="addProfileConfirmPassword" name="addProfileConfirmPassword"
+									placeholder="Confirme su contraseña" required>
 							</div>
 						</div>
+
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="addProfileType" class="form-label">Rol de
-									Perfil</label> <select class=" form-control" id="addProfileType"
-									title="Seleccione un rol" required>
+									Perfil</label> <select class="form-control" id="addProfileType"
+									name="addProfileType" required>
+									<option value="" disabled selected>Seleccione un rol</option>
 									<option value="Usuario">Usuario</option>
 									<option value="Admin">Administrador</option>
 								</select>
@@ -232,19 +237,19 @@
 									name="addProfilePhoto" accept="image/*">
 							</div>
 						</div>
+
+						<br>
+						<div class="d-flex justify-content-center gap-3">
+							<button type="button" class="btn btn-outline-secondary"
+								data-bs-dismiss="modal">Cancelar</button>
+							<input type="submit" class="btn btn-success" value="Crear Perfil">
+						</div>
 					</form>
 				</div>
-				<footer class="modal-footer">
-					<button type="button"
-						class="btn btn-outline-secondary static-style"
-						data-bs-dismiss="modal">Cancelar</button>
-					<button type="submit" class="btn btn-success showSweetAlert"
-						data-bs-dismiss="modal" data-text="Perfil agregado correctamente."
-						data-icon="success" form="registerProfileForm">Agregar</button>
-				</footer>
 			</div>
 		</div>
 	</div>
+
 
 	<!-- Modal de Ver Más -->
 	<div class="modal fade" id="viewProfileModal" tabindex="-1"
@@ -310,7 +315,7 @@
 		</div>
 	</div>
 
-	<!-- Modal de Editar -->
+	<!-- Modal de Editar Perfil -->
 	<div class="modal fade" id="editProfileModal" tabindex="-1"
 		aria-labelledby="editProfileModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-lg">
@@ -322,98 +327,109 @@
 						aria-label="Close"></button>
 				</header>
 				<div class="modal-body">
-					<form action="" method="post" id="editProfileForm">
+					<form action="PerfilServlet" method="post" id="editProfileForm"
+						enctype="multipart/form-data">
+						<input type="hidden" name="type" value="update"> <input
+							type="hidden" name="editProfileId" id="editProfileId" value="0" >
+
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="editProfileUsername" class="form-label">Usuario</label>
 								<input type="text" class="form-control" id="editProfileUsername"
-									name="editProfileUsername" value="juanperez" disabled>
+									name="editProfileUsername" readonly>
 							</div>
 							<div class="col-md-6 mb-3">
 								<label for="editProfileEmail" class="form-label">Correo
 									Electrónico</label> <input type="email" class="form-control"
-									id="editProfileEmail" name="editProfileEmail"
-									value="juan.perez@mail.com" disabled>
+									id="editProfileEmail" name="editProfileEmail" readonly>
 							</div>
 						</div>
+
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="editProfileFirstName" class="form-label">Nombres</label>
 								<input type="text" class="form-control"
-									id="editProfileFirstName" name="editProfileFirstName"
-									value="Juan" required>
+									id="editProfileFirstName" name="editProfileFirstName" required>
 							</div>
 							<div class="col-md-6 mb-3">
 								<label for="editProfileLastName" class="form-label">Apellidos</label>
 								<input type="text" class="form-control" id="editProfileLastName"
-									name="editProfileLastName" value="Pérez Gómez" required>
+									name="editProfileLastName" required>
 							</div>
 						</div>
+
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="editProfilePassword" class="form-label">Contraseña</label>
-								<div class="input-group">
-									<input type="password" class="form-control password-field"
-										data-toggle-id="3" name="editProfilePassword" value="********">
-									<span class="input-group-text" data-toggle-id="3"
-										style="cursor: pointer;"> <i class="bi bi-eye-slash"></i>
-									</span>
-								</div>
+								<input type="password" class="form-control"
+									id="editProfilePassword" name="editProfilePassword">
 							</div>
 							<div class="col-md-6 mb-3">
 								<label for="editProfileRole" class="form-label">Rol de
-									Perfil</label> <select class=" form-control" id="profileRole"
+									Perfil</label> <select class="form-control" id="editProfileRole"
 									name="editProfileRole" required>
-									<option value="Administrador" selected>Administrador</option>
+									<option value="Administrador">Administrador</option>
 									<option value="Usuario">Usuario</option>
 								</select>
 							</div>
 						</div>
+
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="editProfilePhoto" class="form-label">Foto de
 									Perfil</label> <input type="file" class="form-control"
-									id="profilePhoto" name="editProfilePhoto">
+									id="editProfilePhoto" name="editProfilePhoto" accept="image/*">
 							</div>
+							<div class="col-md-6 mb-3">
+								<label for="editProfileState" class="form-label">Estado</label>
+								<select class="form-control" id="editProfileState"
+									name="editProfileState" required>
+									<option value="activo">Activo</option>
+									<option value="inactivo">Inactivo</option>
+								</select>
+							</div>
+						</div>
+
+						<br>
+						<div class="d-flex justify-content-center gap-3">
+							<button type="button" class="btn btn-outline-secondary"
+								data-bs-dismiss="modal">Cancelar</button>
+							<input type="submit" class="btn btn-primary"
+								value="Guardar Cambios">
 						</div>
 					</form>
 				</div>
-				<footer class="modal-footer">
-					<button type="button"
-						class="btn btn-outline-secondary static-style"
-						data-bs-dismiss="modal">Cancelar</button>
-					<button type="submit" class="btn btn-success showSweetAlert"
-						data-bs-dismiss="modal" data-text="Perfil editado correctamente."
-						data-icon="success" form="editProfileForm">Guardar</button>
-				</footer>
 			</div>
 		</div>
 	</div>
 
+
 	<!-- Modal de Eliminar -->
-	<div class="modal fade" id="deleteProfileModal" tabindex="-1"
-		aria-labelledby="deleteProfileModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title text-body-emphasis"
-						id="deleteProfileModalLabel">Confirmar Eliminación de Perfil</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal"
-						aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					<p>¿Estás seguro de que deseas eliminar este perfil?</p>
-				</div>
-				<div class="modal-footer">
-					<button type="button"
-						class="btn btn-outline-secondary static-style"
-						data-bs-dismiss="modal">Cancelar</button>
-					<button type="button" class="btn btn-danger"
-						id="confirmDeleteProfile">Eliminar</button>
-				</div>
+<div class="modal fade" id="deleteProfileModal" tabindex="-1"
+	aria-labelledby="deleteProfileModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title text-body-emphasis"
+					id="deleteProfileModalLabel">Confirmar Eliminación de Perfil</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal"
+					aria-label="Close"></button>
 			</div>
+			<div class="modal-body">
+				<p>¿Estás seguro de que deseas eliminar este perfil?</p>
+			</div>
+			<footer class="modal-footer">
+				<form action="PerfilServlet" method="post">
+					<input type="hidden" name="type" value="delete">
+					<input type="hidden" id="deleteProfileId" name="deleteProfileId" value="0">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+					<button type="submit" class="btn btn-danger">Eliminar</button>
+				</form>
+			</footer>
 		</div>
 	</div>
+</div>
+
 
 	<!-- Scripts de bibliotecas externas -->
 	<script src="js/color-modes.js"></script>
@@ -435,7 +451,7 @@
 	<!-- Scripts personalizados (que se cargan después de las bibliotecas) -->
 	<script src="js/alert.js"></script>
 	<script src="js/datatables-setup.js"></script>
-	<script src="js/perfilesModal.js"></script>
+	<script src="js/modals/perfilesModal.js"></script>
 
 	<!-- Script para DataTable  -->
 	<script>

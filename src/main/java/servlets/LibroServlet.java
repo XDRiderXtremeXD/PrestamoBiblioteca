@@ -35,7 +35,9 @@ public class LibroServlet extends HttpServlet {
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		String type = request.getParameter("type");
+		request.setCharacterEncoding("UTF-8");
+        String type = request.getParameter("type");
+        System.out.println("Acción recibida: " + type);
 
 		switch (type) {
 		case "list":

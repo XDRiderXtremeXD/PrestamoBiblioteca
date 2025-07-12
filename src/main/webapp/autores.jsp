@@ -403,7 +403,7 @@
 	<!-- Scripts personalizados (que se cargan después de las bibliotecas) -->
 	<script src="js/alert.js"></script>
 	<script src="js/datatables-setup.js"></script>
-	<script src="js/autorModal.js"></script>
+	<script src="js/modals/autorModal.js"></script>
 	<!-- Script para DataTable -->
 	<script>
 		setupDataTable('#tablaAutores');
