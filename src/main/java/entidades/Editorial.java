@@ -4,12 +4,14 @@ public class Editorial {
 	   private int idEditorial;
 	    private String nombre;
 	    private String nacionalidad;
-	    private String generoLiterario;
+	    private int idGeneroLiterario;
 	    private String foto;
 	    private int anioFundacion;
 	    private String paginaWeb;
 	    private String direccion;
 	    private String estado;
+	    private String nombreGeneroLiterario;
+	    
 		public int getIdEditorial() {
 			return idEditorial;
 		}
@@ -28,11 +30,12 @@ public class Editorial {
 		public void setNacionalidad(String nacionalidad) {
 			this.nacionalidad = nacionalidad;
 		}
-		public String getGeneroLiterario() {
-			return generoLiterario;
+	
+		public int getIdGeneroLiterario() {
+			return idGeneroLiterario;
 		}
-		public void setGeneroLiterario(String GeneroLiterario) {
-			this.generoLiterario = GeneroLiterario;
+		public void setIdGeneroLiterario(int idGeneroLiterario) {
+			this.idGeneroLiterario = idGeneroLiterario;
 		}
 		public String getFoto() {
 			return foto;
@@ -64,6 +67,11 @@ public class Editorial {
 		public void setEstado(String estado) {
 			this.estado = estado;
 		}
-	    
+		public String getNombreGeneroLiterario() {
+			return nombreGeneroLiterario;
+		}
+		public void setNombreGeneroLiterario(String nombreGeneroLiterario) {
+			this.nombreGeneroLiterario = nombreGeneroLiterario;
+		}	    
 	    
 }

@@ -77,19 +77,19 @@ public class LibroServlet extends HttpServlet {
 
 		String filtro = request.getParameter("filtro");
 		filtro=filtro==null?"":filtro;
-		System.out.println(filtro);
+		System.out.println("filtro libro "+filtro);
 
 		LibroModel libroModel = new LibroModel();
 		List<Libro> data = libroModel.listLibro(filtro);
 
 		AutorModel autorModel = new AutorModel();
-		List<Autor> autores = autorModel.listAutor();
+		List<Autor> autores = autorModel.listAutor("");
 
 		GeneroLiterarioModel generoLiterarioModel = new GeneroLiterarioModel();
 		List<GeneroLiterario> generos = generoLiterarioModel.listGeneroLiterario();
 
 		EditorialesModel editorialModel = new EditorialesModel();
-		List<Editorial> editoriales = editorialModel.listEditorial();
+		List<Editorial> editoriales = editorialModel.listEditorial("");
 
 		CursosModel cursosModel = new CursosModel();
 		List<Curso> cursos = cursosModel.listCurso();

@@ -60,4 +60,12 @@ public class Autor {
 	public void setEstado(String estado) {
 		this.estado = estado;
 	}
+	private String nombreGenero;
+
+	public String getNombreGenero() {
+	    return nombreGenero;
+	}
+	public void setNombreGenero(String nombreGenero) {
+	    this.nombreGenero = nombreGenero;
+	}
 }

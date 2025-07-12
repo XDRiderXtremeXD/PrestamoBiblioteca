@@ -25,6 +25,7 @@
 	<%
 	List<Autor> listAutores = (List<Autor>) request.getAttribute("data");
 	List<GeneroLiterario> listGeneroLiterario = (List<GeneroLiterario>) request.getAttribute("generos");
+	String filtroRecording = request.getParameter("filtro");
 	%>
 	<!-- Header -->
 	<jsp:include page="WEB-INF/includes/header.jsp"></jsp:include>
@@ -63,11 +64,19 @@
 					<!-- Barra de búsqueda -->
 					<div
 						class="col-12 col-md-6 d-flex justify-content-center justify-content-md-end align-items-center">
-						<label for="customSearch" class="visually-hidden">Buscar
-							autor</label> <input type="text" id="customSearch"
-							class="form-control me-2 w-100 w-md-auto" placeholder="Buscar..."
-							style="max-width: 200px;">
-						<button class="btn btn-primary" aria-label="Iniciar búsqueda">Buscar</button>
+						<form action="AutorServlet" method="get"
+							class="d-flex">
+							<input type="hidden" name="type" value="list"> <label
+								for="customSearch" class="visually-hidden">Buscar Autor</label>
+
+							<input type="text" id="customSearch" name="filtro"
+								class="form-control me-2 w-100 w-md-auto"
+								style="max-width: 200px;" placeholder="Buscar..."
+								value="<%=filtroRecording == null ? "" : filtroRecording%>">
+
+							<button type="submit" class="btn btn-primary"
+								aria-label="Iniciar búsqueda">Buscar</button>
+						</form>
 					</div>
 				</section>
 
@@ -106,7 +115,7 @@
 											data-id="<%=item.getIdAutor()%>"
 											data-nombre="<%=item.getNombre()%>"
 											data-nacionalidad="<%=item.getNacionalidad()%>"
-											data-id-genero-literario="<%=item.getIdGeneroLiterario()%>"
+											data-genero-literario="<%=item.getNombreGenero()%>"
 											data-fecha-nacimiento="<%=item.getFechaNacimiento()%>"
 											data-biografia="<%=item.getBiografia()%>"
 											data-estado="<%=item.getEstado()%>">
@@ -152,7 +161,8 @@
 						aria-label="Close"></button>
 				</header>
 				<div class="modal-body">
-					<form action="" method="post" id="addAuthorForm">
+					<form action="AutorServlet" method="post" id="addAuthorForm">
+						<input type="hidden" name="type" value="create">
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="addAuthorName" class="form-label">Nombre</label> <input
@@ -169,14 +179,11 @@
 						</div>
 						<div class="row">
 
-
-
-
 							<div class="col-md-6 mb-3">
 								<label for="addLiteraryGenre" class="form-label">Género
 									Literario</label> <select class="form-control" id="addLiteraryGenre"
-									data-live-search="true" title="Seleccione un género literario"
-									required>
+									name="addLiteraryGenre" data-live-search="true"
+									title="Seleccione un género literario" required>
 									<%
 									if (listGeneroLiterario != null) {
 										for (GeneroLiterario item : listGeneroLiterario) {
@@ -188,8 +195,6 @@
 									%>
 								</select>
 							</div>
-
-
 
 
 							<div class="col-md-6 mb-3">
@@ -204,14 +209,7 @@
 									type="file" class="form-control" id="addAuthorPhoto"
 									name="addAuthorPhoto" accept="image/*">
 							</div>
-							<div class="col-md-6 mb-3">
-								<label for="addAuthorState" class="form-label">Estado</label> <select
-									class="selectpicker form-control" id="addAuthorState"
-									title="Seleccione un estado" required>
-									<option value="Activo">Activo</option>
-									<option value="No Activo">Inactivo</option>
-								</select>
-							</div>
+							<input type="hidden" name="addAuthorState" value="activo">
 						</div>
 						<div class="row">
 							<div class="col-md-12 mb-3">
@@ -221,16 +219,14 @@
 									placeholder="Escribe una breve biografía"></textarea>
 							</div>
 						</div>
+						<br>
+						<div class="d-flex justify-content-center gap-3">
+							<button type="button" class="btn btn-outline-secondary"
+								data-bs-dismiss="modal">Cancelar</button>
+							<input type="submit" class="btn btn-primary" value="Crear Autor">
+						</div>
 					</form>
 				</div>
-				<footer class="modal-footer">
-					<button type="button"
-						class="btn btn-outline-secondary static-style"
-						data-bs-dismiss="modal">Cancelar</button>
-					<button type="submit" class="btn btn-success showSweetAlert"
-						data-bs-dismiss="modal" data-text="Autor agregado correctamente."
-						data-icon="success" form="addAuthorForm">Agregar</button>
-				</footer>
 			</div>
 		</div>
 	</div>
@@ -287,12 +283,6 @@
 								literarios.</p>
 						</div>
 					</div>
-					<div class="row">
-						<div class="col-md-6 mb-3">
-							<h6 class="fw-bold">Estado</h6>
-							<p id="viewAuthorBio" class="text-success">Activo</p>
-						</div>
-					</div>
 				</div>
 				<footer class="modal-footer">
 					<button type="button"
@@ -315,26 +305,29 @@
 						aria-label="Close"></button>
 				</header>
 				<div class="modal-body">
-					<form action="" method="post" id="editAuthorForm">
+					<form action="AutorServlet" method="post" id="editAuthorForm">
+						<input type="hidden" name="type" value="update"> <input
+							type="hidden" name="editAuthorId" id="editAuthorId">
+
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="editAuthorName" class="form-label">Nombre</label> <input
 									type="text" class="form-control" id="editAuthorName"
-									name="editAuthorName" value="Juan López" required>
+									name="editAuthorName" required>
 							</div>
 							<div class="col-md-6 mb-3">
-								<label for="edirAuthorNationality" class="form-label">Nacionalidad</label>
+								<label for="editAuthorNationality" class="form-label">Nacionalidad</label>
 								<input type="text" class="form-control"
 									id="edirAuthorNationality" name="edirAuthorNationality"
-									value="Mexicano" required>
+									required>
 							</div>
 						</div>
+
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="editLiteraryGenre" class="form-label">Género
 									Literario</label> <select class="form-control" id="editLiteraryGenre"
-									data-live-search="true" title="Seleccione un género literario"
-									required>
+									name="editLiteraryGenre" required>
 									<%
 									if (listGeneroLiterario != null) {
 										for (GeneroLiterario item : listGeneroLiterario) {
@@ -349,10 +342,10 @@
 							<div class="col-md-6 mb-3">
 								<label for="editAuthorBirthDate" class="form-label">Fecha
 									de Nacimiento</label> <input type="date" class="form-control"
-									id="editAuthorBirthDate" name="editAuthorBirthDate"
-									value="1980-08-15" required>
+									id="editAuthorBirthDate" name="editAuthorBirthDate" required>
 							</div>
 						</div>
+
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="editAuthorPhoto" class="form-label">Foto</label> <input
@@ -361,30 +354,31 @@
 							</div>
 							<div class="col-md-6 mb-3">
 								<label for="editAuthorState" class="form-label">Estado</label> <select
-									class="selectpicker form-control" id="editAuthorState"
-									name="Seleccione un estado" required>
-									<option value="Activo" selected>Activo</option>
-									<option value="No Activo">Inactivo</option>
+									class="form-control" id="editAuthorState"
+									name="editAuthorState" required>
+									<option value="activo">Activo</option>
+									<option value="inactivo">Inactivo</option>
 								</select>
 							</div>
 						</div>
+
 						<div class="row">
 							<div class="col-md-12 mb-3">
 								<label for="editAuthorBio" class="form-label">Biografía</label>
 								<textarea class="form-control" id="editAuthorBio"
-									name="editAuthorBio" rows="3" required>Juan López es un escritor mexicano reconocido por sus novelas de ficción histórica.</textarea>
+									name="editAuthorBio" rows="3" required></textarea>
 							</div>
 						</div>
+
+						<br>
+						<div class="d-flex justify-content-center gap-3">
+							<button type="button" class="btn btn-outline-secondary"
+								data-bs-dismiss="modal">Cancelar</button>
+							<input type="submit" class="btn btn-primary" value="Editar Autor">
+						</div>
 					</form>
+
 				</div>
-				<footer class="modal-footer">
-					<button type="button"
-						class="btn btn-outline-secondary static-style"
-						data-bs-dismiss="modal">Cancelar</button>
-					<button type="submit" class="btn btn-success showSweetAlert"
-						data-bs-dismiss="modal" data-text="Autor editado correctamente."
-						data-icon="success" form="editAuthorForm">Guardar</button>
-				</footer>
 			</div>
 		</div>
 	</div>

@@ -8,6 +8,6 @@ public interface AutoresInterface {
     public int createAutor(Autor autor);
     public int updateAutor(Autor autor);
     public int deleteAutor(int id);
-    public List<Autor> listAutor();
+    public List<Autor> listAutor(String filtro);
     public Autor getAutor(int id);
 }
