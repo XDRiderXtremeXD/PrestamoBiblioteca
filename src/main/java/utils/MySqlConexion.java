@@ -1,5 +1,5 @@
 package utils;
-
+import io.github.cdimascio.dotenv.Dotenv;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -10,16 +10,22 @@ public class MySqlConexion {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
 
-			// Variables de entorno (Railway o .env)
+			// Si Railway define las variables, se usan directamente.
 			String url = System.getenv("DB_URL");
 			String user = System.getenv("DB_USER");
 			String pass = System.getenv("DB_PASS");
 
-			// Si no está en entorno (ej. local), usar valores por defecto
-			if (url == null)   url   = "jdbc:mysql://localhost:3308/bookstudio_db?useSSL=false&useUnicode=true&characterEncoding=UTF-8&useTimezone=true&serverTimezone=UTC";
-			if (user == null)  user = "root";
-			if (pass == null)  pass = "1234";
-			
+			// Si no existen (en entorno local), intenta cargarlas desde .env
+			if (url == null || user == null || pass == null) {
+			    try {
+			        Dotenv dotenv = Dotenv.load();
+			        if (url == null) url = dotenv.get("DB_URL");
+			        if (user == null) user = dotenv.get("DB_USER");
+			        if (pass == null) pass = dotenv.get("DB_PASS");
+			    } catch (Exception e) {
+			        System.out.println("Error cargando .env: " + e.getMessage());
+			    }
+			}			
 			con = DriverManager.getConnection(url, user, pass);
 
 		} catch (ClassNotFoundException e) {

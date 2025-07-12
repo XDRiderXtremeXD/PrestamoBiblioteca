@@ -1,0 +1,33 @@
+# ===========================================
+# 📁 PROYECTOS JAVA + MAVEN + ECLIPSE
+# ===========================================
+
+# 🛑 Archivos generados por Maven
+target/
+
+# 🛠️ Archivos de configuración local de Eclipse
+.classpath
+.project
+.settings/
+.metadata/
+
+# 🔐 Variables de entorno (usadas con dotenv)
+.env
+
+# 🧪 Archivos de pruebas o builds temporales
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# 📦 Dependencias descargadas manualmente
+lib/*.jar
+
+# ♻️ Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# 🚀 Railway y otros entornos
+.idea/
+.vscode/
