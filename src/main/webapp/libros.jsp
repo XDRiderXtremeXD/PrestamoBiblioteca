@@ -511,7 +511,7 @@
 	<script src="js/color-modes.js"></script>
 	<script src="js/alert.js"></script>
 	<script src="js/datatables-setup.js"></script>
-	<script src="js/librosModal.js"></script>
+	<script src="js/modals/librosModal.js"></script>
 	<!-- Script para DataTable -->
 	<script>
 		setupDataTable('#tablaLibros');

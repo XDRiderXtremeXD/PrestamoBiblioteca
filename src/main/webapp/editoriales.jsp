@@ -471,7 +471,7 @@
 		<!-- Scripts personalizados (que se cargan después de las bibliotecas) -->
 		<script src="js/alert.js"></script>
 		<script src="js/datatables-setup.js"></script>
-		<script src="js/editorialesModal.js"></script>
+		<script src="js/modals/editorialesModal.js"></script>
 		<!-- Script para DataTable -->
 		<script>
 			setupDataTable('#tablaEditoriales');

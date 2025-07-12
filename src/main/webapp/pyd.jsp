@@ -486,7 +486,7 @@
 	<!-- Scripts personalizados (que se cargan después de las bibliotecas) -->
 	<script src="js/alert.js"></script>
 	<script src="js/datatables-setup.js"></script>
-	<script src="js/prestamoDevolucionModals.js"></script>
+	<script src="js/modals/prestamoDevolucionModals.js"></script>
 	<script src="js/prestamoDevolucionBotonesAccion.js"></script>
 
 	<!-- Script para DataTable -->

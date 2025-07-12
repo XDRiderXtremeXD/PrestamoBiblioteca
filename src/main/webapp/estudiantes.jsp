@@ -64,12 +64,10 @@
 					<!-- Barra de búsqueda -->
 					<div
 						class="col-12 col-md-6 d-flex justify-content-center justify-content-md-end align-items-center">
-						<form action="EstudianteServlet" method="get"
-							class="d-flex">
+						<form action="EstudianteServlet" method="get" class="d-flex">
 							<input type="hidden" name="type" value="list"> <label
-								for="customSearch" class="visually-hidden">Buscar Estudiante</label>
-
-							<input type="text" id="customSearch" name="filtro"
+								for="customSearch" class="visually-hidden">Buscar
+								Estudiante</label> <input type="text" id="customSearch" name="filtro"
 								class="form-control me-2 w-100 w-md-auto"
 								style="max-width: 200px;" placeholder="Buscar..."
 								value="<%=filtroRecording == null ? "" : filtroRecording%>">
@@ -260,7 +258,7 @@
 									%>
 								</select>
 							</div>
-							
+
 							<input type="hidden" name="addStudentState" value="activo">
 						</div>
 
@@ -470,32 +468,6 @@
 	</div>
 
 
-	<!-- Modal de Eliminar -->
-	<div class="modal fade" id="deleteStudentModal" tabindex="-1"
-		aria-labelledby="deleteStudentModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title text-body-emphasis"
-						id="deleteStudentModalLabel">Confirmar Eliminación de
-						Estudiante</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal"
-						aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					<p>¿Estás seguro de que deseas eliminar este estudiante?</p>
-				</div>
-				<div class="modal-footer">
-					<button type="button"
-						class="btn btn-outline-secondary static-style"
-						data-bs-dismiss="modal">Cancelar</button>
-					<button type="button" class="btn btn-danger"
-						id="confirmDeleteStudent">Eliminar</button>
-				</div>
-			</div>
-		</div>
-	</div>
-
 	<!-- Scripts de bibliotecas externas   -->
 	<script src="js/color-modes.js"></script>
 	<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -516,7 +488,7 @@
 	<!-- Scripts personalizados (que se cargan después de las bibliotecas) -->
 	<script src="js/alert.js"></script>
 	<script src="js/datatables-setup.js"></script>
-	<script src="js/estudianteModal.js"></script>
+	<script src="js/modals/estudianteModal.js"></script>
 	<!-- Script para DataTable -->
 	<script>
 		setupDataTable('#tablaEstudiantes');
