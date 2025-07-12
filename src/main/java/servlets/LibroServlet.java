@@ -89,7 +89,7 @@ public class LibroServlet extends HttpServlet {
 		List<GeneroLiterario> generos = generoLiterarioModel.listGeneroLiterario();
 
 		EditorialesModel editorialModel = new EditorialesModel();
-		List<Editorial> editoriales = editorialModel.listEditorial();
+		List<Editorial> editoriales = editorialModel.listEditorial("");
 
 		CursosModel cursosModel = new CursosModel();
 		List<Curso> cursos = cursosModel.listCurso();

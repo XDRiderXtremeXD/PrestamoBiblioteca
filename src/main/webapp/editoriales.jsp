@@ -25,6 +25,7 @@
 	<%
 	List<Editorial> listEditorial = (List<Editorial>) request.getAttribute("data");
 	List<GeneroLiterario> listGeneroLiterario = (List<GeneroLiterario>) request.getAttribute("generos");
+	String filtroRecording = request.getParameter("filtro");
 	%>
 	<!-- Header -->
 	<jsp:include page="WEB-INF/includes/header.jsp"></jsp:include>
@@ -63,11 +64,18 @@
 					<!-- Barra de búsqueda -->
 					<div
 						class="col-12 col-md-6 d-flex justify-content-center justify-content-md-end align-items-center">
-						<label for="customSearch" class="visually-hidden">Buscar
-							editorial</label> <input type="text" id="customSearch"
-							class="form-control me-2 w-100 w-md-auto" placeholder="Buscar..."
-							style="max-width: 200px;">
-						<button class="btn btn-primary" aria-label="Iniciar búsqueda">Buscar</button>
+						<form action="EditorialServlet" method="get" class="d-flex">
+							<input type="hidden" name="type" value="list"> <label
+								for="customSearch" class="visually-hidden">Buscar Autor</label>
+
+							<input type="text" id="customSearch" name="filtro"
+								class="form-control me-2 w-100 w-md-auto"
+								style="max-width: 200px;" placeholder="Buscar..."
+								value="<%=filtroRecording == null ? "" : filtroRecording%>">
+
+							<button type="submit" class="btn btn-primary"
+								aria-label="Iniciar búsqueda">Buscar</button>
+						</form>
 					</div>
 				</section>
 
@@ -97,7 +105,7 @@
 								<td><%=item.getIdEditorial()%></td>
 								<td><%=item.getNombre()%></td>
 								<td><%=item.getNacionalidad()%></td>
-								<td><%=item.getGeneroLiterario()%></td>
+								<td><%=item.getNombreGeneroLiterario()%></td>
 								<td><%=item.getFoto()%></td>
 								<td><%=item.getAnioFundacion()%></td>
 								<td><%=item.getPaginaWeb()%></td>
@@ -113,7 +121,7 @@
 											data-id="<%=item.getIdEditorial()%>"
 											data-nombre="<%=item.getNombre()%>"
 											data-nacionalidad="<%=item.getNacionalidad()%>"
-											data-genero-literario="<%=item.getGeneroLiterario()%>"
+											data-genero-literario="<%=item.getNombreGeneroLiterario()%>"
 											data-anio-fundacion="<%=item.getAnioFundacion()%>"
 											data-pagina-web="<%=item.getPaginaWeb()%>"
 											data-direccion="<%=item.getDireccion()%>"
@@ -128,7 +136,7 @@
 											data-id="<%=item.getIdEditorial()%>"
 											data-nombre="<%=item.getNombre()%>"
 											data-nacionalidad="<%=item.getNacionalidad()%>"
-											data-genero-literario="<%=item.getGeneroLiterario()%>"
+											data-genero-literario="<%=item.getNombreGeneroLiterario()%>"
 											data-anio-fundacion="<%=item.getAnioFundacion()%>"
 											data-pagina-web="<%=item.getPaginaWeb()%>"
 											data-direccion="<%=item.getDireccion()%>"
@@ -154,6 +162,30 @@
 					</table>
 				</section>
 	</main>
+	
+	<!-- Modal de Confirmación para Eliminar -->
+<div class="modal fade" id="deletePublisherModal" tabindex="-1" aria-labelledby="deletePublisherModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<header class="modal-header">
+				<h5 class="modal-title" id="deletePublisherModalLabel">¿Eliminar Editorial?</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+			</header>
+			<div class="modal-body">
+				<p>¿Estás seguro que deseas eliminar esta editorial?</p>
+			</div>
+			<footer class="modal-footer">
+				<form action="EditorialServlet" method="post">
+					<input type="hidden" name="type" value="delete">
+					<input type="hidden" id="deleteEditorialId" name="editEditorialId" value="0">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+					<button type="submit" class="btn btn-danger">Eliminar</button>
+				</form>
+			</footer>
+		</div>
+	</div>
+</div>
+	
 
 	<!-- Modal de Agregar -->
 	<div class="modal fade" id="addEditorialModal" tabindex="-1"
@@ -167,27 +199,30 @@
 						aria-label="Close"></button>
 				</header>
 				<div class="modal-body">
-					<form action="" method="post" id="addEditorialForm">
+					<form action="EditorialServlet" method="post" id="addEditorialForm">
+						<input type="hidden" name="type" value="create">
+
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="addEditorialName" class="form-label">Nombre</label>
 								<input type="text" class="form-control" id="addEditorialName"
-									name="addEditorialName"
+									name="editPublisherName"
 									placeholder="Ingrese el nombre de la editorial" required>
 							</div>
 							<div class="col-md-6 mb-3">
 								<label for="addEditorialNationality" class="form-label">Nacionalidad</label>
 								<input type="text" class="form-control"
-									id="addEditorialNationality" name="addEditorialNationality"
+									id="addEditorialNationality" name="editPublisherNationality"
 									placeholder="Ingrese la nacionalidad de la editorial" required>
 							</div>
 						</div>
+
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="addLiteraryGenre" class="form-label">Género
 									Literario</label> <select class="form-control" id="addLiteraryGenre"
-									data-live-search="true" title="Seleccione un género literario"
-									required>
+									name="editLiteraryGenre" data-live-search="true"
+									title="Seleccione un género literario" required>
 									<%
 									if (listGeneroLiterario != null) {
 										for (GeneroLiterario item : listGeneroLiterario) {
@@ -199,56 +234,54 @@
 									%>
 								</select>
 							</div>
+
 							<div class="col-md-6 mb-3">
 								<label for="addEditorialPhoto" class="form-label">Foto</label> <input
 									type="file" class="form-control" id="addEditorialPhoto"
 									name="addEditorialPhoto" accept="image/*">
 							</div>
 						</div>
+
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="addFoundationYear" class="form-label">Año de
 									Fundación</label> <input type="number" class="form-control"
-									id="addFoundationYear" name="addFoundationYear" min="0"
+									id="addFoundationYear" name="editPublisherYear" min="0"
 									max="2024" placeholder="Ingrese el año de fundación" required>
 							</div>
 							<div class="col-md-6 mb-3">
 								<label for="addEditorialWebsite" class="form-label">Página
 									Web</label> <input type="url" class="form-control"
-									id="addEditorialWebsite" name="addEditorialWebsite"
+									id="addEditorialWebsite" name="editPublisherWebsite"
 									placeholder="https://ejemplo.com">
 							</div>
 						</div>
+
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="addEditorialAddress" class="form-label">Dirección</label>
 								<textarea class="form-control" id="addEditorialAddress"
-									name="addEditorialAddress" rows="3"
+									name="editPublisherAddress" rows="3"
 									placeholder="Ingrese la dirección de la editorial"></textarea>
 							</div>
-							<div class="col-md-6 mb-3">
-								<label for="addEditorialState" class="form-label">Estado</label>
-								<select class=" form-control" id="addEditorialState"
-									title="Seleccione un estado" required>
-									<option value="Activo">Activo</option>
-									<option value="No Activo">Inactivo</option>
-								</select>
-							</div>
+							
+							<input type="hidden" name="editPublisherState" value="activo">
+							
+						</div>
+
+						<br>
+						<div class="d-flex justify-content-center gap-3">
+							<button type="button" class="btn btn-outline-secondary"
+								data-bs-dismiss="modal">Cancelar</button>
+							<input type="submit" class="btn btn-primary"
+								value="Crear Editorial">
 						</div>
 					</form>
 				</div>
-				<footer class="modal-footer">
-					<button type="button"
-						class="btn btn-outline-secondary static-style"
-						data-bs-dismiss="modal">Cancelar</button>
-					<button type="submit" class="btn btn-success showSweetAlert"
-						data-bs-dismiss="modal"
-						data-text="Editorial agregada correctamente." data-icon="success"
-						form="addEditorialForm">Agregar</button>
-				</footer>
 			</div>
 		</div>
 	</div>
+
 
 	<!-- Modal de Ver Más -->
 	<div class="modal fade" id="viewPublisherModal" tabindex="-1"
@@ -334,7 +367,11 @@
 						aria-label="Close"></button>
 				</header>
 				<div class="modal-body">
-					<form action="" method="post" id="editPublisherForm">
+					<form action="EditorialServlet" method="post"
+						id="editPublisherForm">
+						<input type="hidden" name="type" value="update"> <input
+							type="hidden" name="editEditorialId" id="editEditorialId"
+							value="0">
 						<div class="row">
 							<div class="col-md-6 mb-3">
 								<label for="editPublisherName" class="form-label">Nombre</label>
@@ -353,7 +390,7 @@
 								<label for="editLiteraryGenre" class="form-label">Género
 									Literario</label> <select class="form-control" id="editLiteraryGenre"
 									data-live-search="true" title="Seleccione un género literario"
-									required>
+									name="editLiteraryGenre" required>
 									<%
 									if (listGeneroLiterario != null) {
 										for (GeneroLiterario item : listGeneroLiterario) {
@@ -396,51 +433,48 @@
 							<div class="col-md-6 mb-3">
 								<label for="editPublisherState" class="form-label">Estado</label>
 								<select class=" form-control" id="editPublisherState"
-									name="Seleccione un estado" required>
-									<option value="Activo" selected>Activo</option>
-									<option value="No Activo">Inactivo</option>
+									name="editPublisherState" required>
+									<option value="activo" selected>Activo</option>
+									<option value="inactivo">Inactivo</option>
 								</select>
 							</div>
 						</div>
+						<br>
+						<div class="d-flex justify-content-center gap-3">
+							<button type="button" class="btn btn-outline-secondary"
+								data-bs-dismiss="modal">Cancelar</button>
+							<input type="submit" class="btn btn-primary"
+								value="Editar Editorial">
+						</div>
 					</form>
 				</div>
-				<footer class="modal-footer">
-					<button type="button"
-						class="btn btn-outline-secondary static-style"
-						data-bs-dismiss="modal">Cancelar</button>
-					<button type="submit" class="btn btn-success showSweetAlert"
-						data-bs-dismiss="modal"
-						data-text="Editorial editada correctamente." data-icon="success"
-						form="editPublisherForm">Guardar</button>
-				</footer>
 			</div>
 		</div>
-	</div>
 
-	<!-- Scripts de bibliotecas externas -->
-	<script src="js/color-modes.js"></script>
-	<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-	<script
-		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-	<script
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-	<script
-		src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-	<script
-		src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/js/bootstrap-select.min.js"></script>
-	<script
-		src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/i18n/defaults-es_ES.min.js"></script>
-	<script
-		src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+		<!-- Scripts de bibliotecas externas -->
+		<script src="js/color-modes.js"></script>
+		<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+		<script
+			src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+		<script
+			src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+		<script
+			src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+		<script
+			src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.14.0-beta3/dist/js/bootstrap-select.min.js"></script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/i18n/defaults-es_ES.min.js"></script>
+		<script
+			src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
 
-	<!-- Scripts personalizados (que se cargan después de las bibliotecas) -->
-	<script src="js/alert.js"></script>
-	<script src="js/datatables-setup.js"></script>
-<script src="js/editorialesModal.js"></script>
-	<!-- Script para DataTable -->
-	<script>
-		setupDataTable('#tablaEditoriales');
-	</script>
+		<!-- Scripts personalizados (que se cargan después de las bibliotecas) -->
+		<script src="js/alert.js"></script>
+		<script src="js/datatables-setup.js"></script>
+		<script src="js/editorialesModal.js"></script>
+		<!-- Script para DataTable -->
+		<script>
+			setupDataTable('#tablaEditoriales');
+		</script>
 </body>
 </html>
