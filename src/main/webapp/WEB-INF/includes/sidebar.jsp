@@ -1,5 +1,9 @@
-	<%
+	<%@page import="entidades.Perfil"%>
+<%
 	    String currentPage = (String) request.getParameter("currentPage");
+	    String nameUser = (String) request.getParameter("nameUser");
+		Perfil perfil = (Perfil) session.getAttribute("perfilLogueado");
+	
 	%>
 	<!-- Sidebar visible en pantallas medianas y grandes -->
 	<aside class="position-fixed d-none d-md-flex flex-column border-end bg-body">
@@ -122,7 +126,7 @@
 	   	
 			 <!-- Información Usuario -->
 		    <footer class="p-4 mt-auto">
-		        <p class="text-muted mb-0">Sesión iniciada como: <strong>Usuario</strong></p>
+		        <p class="text-muted mb-0">Sesión iniciada como: <strong><%=perfil.getNombres()%></strong></p>
 		    </footer>
 		</nav>
 	</aside>

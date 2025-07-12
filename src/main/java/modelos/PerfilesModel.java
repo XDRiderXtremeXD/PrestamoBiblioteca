@@ -12,7 +12,43 @@ import interfaces.PerfilesInterface;
 import utils.MySqlConexion;
 
 public class PerfilesModel implements PerfilesInterface {
+   
+	@Override
+	 public Perfil validarLogin(String usuario, String contrasena) {
+	        Perfil perfil = null;
+            System.out.println("*"+usuario+"*"+contrasena+"*");
+	        String sql = "SELECT * FROM Perfil WHERE Usuario = ? AND Contrasena = ? AND Estado = 'activo'";
 
+	        try (Connection cn = MySqlConexion.getConexion();
+	                PreparedStatement ps = cn.prepareStatement(sql)) {
+
+	            ps.setString(1, usuario);
+	            ps.setString(2, contrasena); // Reemplaza esto por una versión encriptada si usas hash
+
+	            ResultSet rs = ps.executeQuery();
+                
+	            
+	            
+	            if (rs.next()) {
+	                perfil = new Perfil();
+	                perfil.setIdPerfil(rs.getInt("IDPerfil"));
+	                perfil.setUsuario(rs.getString("Usuario"));
+	                perfil.setCorreoElectronico(rs.getString("CorreoElectronico"));
+	                perfil.setNombres(rs.getString("Nombres"));
+	                perfil.setApellidos(rs.getString("Apellidos"));
+	                perfil.setContrasena(rs.getString("Contrasena"));
+	                perfil.setRol(rs.getString("Rol"));
+	                perfil.setFotoPerfil(rs.getString("FotoPerfil")); // Asegúrate de que esté en formato base64 si es BLOB
+	                perfil.setEstado(rs.getString("Estado"));
+	            }
+
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+
+	        return perfil;
+	    }
+	
     @Override
     public int createPerfil(Perfil perfil) {
         String sql = """

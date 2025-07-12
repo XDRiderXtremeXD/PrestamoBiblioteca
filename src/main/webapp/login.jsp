@@ -5,16 +5,15 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookStudio</title>
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="css/login.css">
-    <title>BookStudio</title>
-    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
 </head>
 <body>
     <div class="container-fluid g-0">
         <div class="row vh-100 g-0">
-
             <!-- Lado Izquierdo (Imagen de fondo) -->
             <section class="col-lg-6 d-none d-lg-block position-relative" aria-hidden="true">
                 <div class="bg-holder" style="background-image: url('images/login.jpg');"></div>
@@ -35,27 +34,32 @@
                     <div class="text-center mb-4">
                         <h2 class="fw-bold text-body-emphasis">Iniciar Sesión</h2>
                         <p>Accede a tu cuenta</p>
+                        <% if (request.getAttribute("error") != null) { %>
+                            <div class="alert alert-danger" role="alert">
+                                <%= request.getAttribute("error") %>
+                            </div>
+                        <% } %>
                     </div>
 
                     <!-- Formulario -->
-                    <form action="#" id="loginForm" aria-labelledby="loginTitle">
+                    <form action="LoginLEServlet" method="post" id="loginForm" aria-labelledby="loginTitle">
                         <!-- Campo Username -->
                         <div class="mb-4 position-relative">
                             <label for="username" class="form-label">Usuario</label>
-                            <input type="text" id="username" name="txtUsername" class="form-control fs-6" placeholder="Ingrese su usuario" required aria-describedby="usernameHelp">
-                            <small id="usernameHelp" class="text-danger"></small> <!-- Mensaje de error -->
+                            <input type="text" id="username" name="usuario" class="form-control fs-6" placeholder="Ingrese su usuario" required>
+                            <small class="text-danger"></small>
                         </div>
 
                         <!-- Campo Contraseña -->
                         <div class="mb-4 position-relative">
                             <label for="password" class="form-label">Contraseña</label>
                             <div class="input-group">
-                                <input type="password" class="form-control password-field" data-toggle-id="1" name="txtPassword" placeholder="Ingrese su contraseña" required aria-describedby="passwordHelp">
+                                <input type="password" class="form-control password-field" id="password" name="contrasena" placeholder="Ingrese su contraseña" required>
                                 <span class="input-group-text eye-icon" data-toggle-id="1">
                                     <i class="bi bi-eye-slash"></i>
                                 </span>
                             </div>
-                            <small id="passwordHelp" class="text-danger"></small> <!-- Mensaje de error -->
+                            <small class="text-danger"></small>
                         </div>
 
                         <!-- Opciones adicionales -->
@@ -78,57 +82,52 @@
             </main>
         </div>
     </div>
-    
+
     <!-- Botón de cambiar tema -->
     <div class="dropdown position-fixed bottom-0 end-0 mb-3 me-3">
-    	<jsp:include page="WEB-INF/includes/buttonTheme.jsp">
-    		<jsp:param name="menuType" value="2" />
-    	</jsp:include>
-	</div>
-	
+        <jsp:include page="WEB-INF/includes/buttonTheme.jsp">
+            <jsp:param name="menuType" value="2" />
+        </jsp:include>
+    </div>
+
     <!-- JavaScript -->
     <script src="js/color-modes.js"></script>
     <script src="js/password.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
-    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
+
     <script>
-    $(document).ready(function () {
-        $("form").validate({
-            rules: {
-                txtUsername: {
-                    required: true
+        $(document).ready(function () {
+            $("#loginForm").validate({
+                rules: {
+                    usuario: {
+                        required: true
+                    },
+                    contrasena: {
+                        required: true,
+                        minlength: 6
+                    }
                 },
-                txtPassword: {
-                    required: true,
-                    minlength: 6
-                }
-            },
-            messages: {
-            	txtUsername: {
-                    required: "Por favor, ingresa tu usuario.",
+                messages: {
+                    usuario: {
+                        required: "Por favor, ingresa tu usuario.",
+                    },
+                    contrasena: {
+                        required: "Por favor, ingresa tu contraseña.",
+                        minlength: "Tu contraseña debe tener al menos 6 caracteres."
+                    }
                 },
-                txtPassword: {
-                    required: "Por favor, ingresa tu contraseña.",
-                    minlength: "Tu contraseña debe tener al menos 6 caracteres."
+                errorElement: "small",
+                errorClass: "text-danger",
+                highlight: function (element) {
+                    $(element).addClass("is-invalid");
+                },
+                unhighlight: function (element) {
+                    $(element).removeClass("is-invalid");
                 }
-            },
-            errorElement: "small",
-            errorClass: "text-danger",
-            highlight: function (element) {
-                $(element).addClass("is-invalid");
-            },
-            unhighlight: function (element) {
-                $(element).removeClass("is-invalid");
-            },
-            submitHandler: function (form) {
-                alert("Formulario enviado con éxito.");
-                form.submit();
-            }
+            });
         });
-    });
-	</script>
+    </script>
 </body>
 </html>
