@@ -27,7 +27,7 @@ El sistema cuenta con una base de datos relacional en **MySQL**, y permite manej
 
 ## 📁 Estructura básica del proyecto
 
-\`\`\`
+```
 BookStudio/
 ├── src/
 │   └── ... (código fuente Java)
@@ -37,7 +37,7 @@ BookStudio/
 ├── .env
 ├── README.md
 └── ...
-\`\`\`
+```
 
 ---
 
@@ -48,20 +48,20 @@ BookStudio/
 Este archivo contiene las credenciales necesarias para conectarse a la base de datos.  
 Ejemplo de contenido del archivo `.env`:
 
-\`\`\`env
+```env
 DB_URL=jdbc:mysql://localhost:3306/bookstudio
 DB_USER=tu_usuario
 DB_PASS=tu_contraseña
-\`\`\`
+```
 
 En el código Java se utiliza la biblioteca `dotenv-java` para cargar estas variables:
 
-\`\`\`java
+```java
 Dotenv dotenv = Dotenv.load();
 if (url == null) url = dotenv.get("DB_URL");
 if (user == null) user = dotenv.get("DB_USER");
 if (pass == null) pass = dotenv.get("DB_PASS");
-\`\`\`
+```
 
 > ✅ El archivo `.env` está incluido en el `.gitignore`, por lo tanto **no será subido al repositorio**.
 
@@ -70,9 +70,9 @@ if (pass == null) pass = dotenv.get("DB_PASS");
 ## 🚀 Cómo ejecutar el proyecto
 
 1. Clona este repositorio:
-   \`\`\`bash
+   ```bash
    git clone https://github.com/tuusuario/BookStudio.git
-   \`\`\`
+   ```
 
 2. Crea el archivo `.env` en la raíz del proyecto con tus variables de entorno.
 
@@ -85,9 +85,9 @@ if (pass == null) pass = dotenv.get("DB_PASS");
 6. Ejecuta el proyecto desde tu IDE o despliega en Tomcat manualmente.
 
 7. Abre tu navegador y accede a:
-   \`\`\`
+   ```
    http://localhost:8080/BookStudio/
-   \`\`\`
+   ```
 
 ---
 
@@ -105,14 +105,14 @@ if (pass == null) pass = dotenv.get("DB_PASS");
 
 ### Diagrama entidad-relación (ER)
 
-\`\`\`
+```
 [Libro] -----< [Prestamo] >----- [Estudiante]
    |                                |
    |                                |
 [Autor]                        [Curso]
    |                                |
 [Editorial]                    [Facultad]
-\`\`\`
+```
 
 ---
 
