@@ -116,6 +116,4 @@ if (pass == null) pass = dotenv.get("DB_PASS");
 
 ---
 
-## 👨‍💻 Autor
-
 Desarrollado como proyecto académico de aprendizaje en **Cibertec** por:
